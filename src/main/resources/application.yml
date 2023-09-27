@@ -1,0 +1,26 @@
+spring:
+  jpa:
+    hibernate:
+      generate-ddl: true
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: true
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://${LOCAL_IP}:${MYSQL_LOCAL_PORT}/${MYSQL_LOCAL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_LOCAL_USER}
+    password: ${MYSQL_LOCAL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+logging.level:
+  org.hibernate.SQL: debug
+
