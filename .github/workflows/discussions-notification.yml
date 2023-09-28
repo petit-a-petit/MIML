@@ -1,0 +1,21 @@
+name: GitHub Discussions Notification
+
+on:
+  discussions:
+    types:
+      - created
+      - commented
+
+jobs:
+  notify_slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Send notification to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          MESSAGE="A new discussion has been created: ${{ github.event.discussion.html_url }}"
+          curl -X POST -H 'Content-type: application/json' --data "{'text':'$MESSAGE'}" $SLACK_WEBHOOK_URL
