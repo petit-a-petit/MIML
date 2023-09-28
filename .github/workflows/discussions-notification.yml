@@ -2,10 +2,9 @@ name: GitHub Discussions Notification
 
 on:
   discussion:
-    types:
-      - created
+    types: [created]
   discussion_comment:
-      - created
+    types: [created]
 
 jobs:
   notify_slack:
