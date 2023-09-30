@@ -19,6 +19,21 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: ${NAVER.USERNAME}
+    password: ${NAVER.PASSWORD}
+    properties:
+      debug: true
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: smtp.naver.com
+          starttls:
+            enable: true
 logging.level:
   org.hibernate.SQL: debug
 
