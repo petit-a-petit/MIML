@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-// local 프로파일이면 메일을 로그로 출력합니다.
-@Profile("local")
+// test 프로파일이면 메일을 로그로 출력합니다.
+@Profile("test")
 @Service
 @Slf4j
 public class ConsoleMailService implements MailService{

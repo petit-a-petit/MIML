@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-// local이 아니면 실제 메일 전송
-@Profile("!local")
+// test가 아니면 실제 메일 전송
+@Profile("!test")
 @Slf4j
 @RequiredArgsConstructor
 @Service
