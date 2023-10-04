@@ -39,13 +39,12 @@ tasks.named('test') {
 
 jacocoTestReport {
     reports {
-        xml.required = false
         csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        xml.required = false
+        html.required = true
     }
 
     finalizedBy 'jacocoTestCoverageVerification'
-
 }
 
 jacocoTestCoverageVerification {
@@ -54,6 +53,7 @@ jacocoTestCoverageVerification {
             enabled = true
             element = 'CLASS'
             excludes = [
+                    'com.petitapetit.miml.MimlApplication',
                     '*.*Dto',
                     '*.*Config',
                     '*.*Test',
