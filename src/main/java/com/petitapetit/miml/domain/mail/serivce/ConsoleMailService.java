@@ -1,5 +1,6 @@
 package com.petitapetit.miml.domain.mail.serivce;
 
+import com.petitapetit.miml.domain.notification.model.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class ConsoleMailService implements MailService{
 
     @Override
-    public void sendEmail(String to) {
-        log.info("send email to : {}",to);
+    public void sendEmail(Notification notification) {
+        log.info("send email to : {}",notification.getUserEmail());
     }
 }

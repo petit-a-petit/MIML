@@ -1,6 +1,5 @@
 package com.petitapetit.miml.domain.notification.model;
 
-import com.petitapetit.miml.domain.notification.TempSong;
 import com.petitapetit.miml.domain.notification.TempUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,20 +12,29 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "notification_type")
 @EntityListeners(AuditingEntityListener.class)
-public class Notification {
+public abstract class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String userEmail;
-    private String songName;
-    private String songArtist;
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Notification(TempUser user, TempSong song){
+    public Notification(TempUser user){
         this.userEmail = user.getEmail();
-        this.songArtist = song.getArtist().getName();
-        this.songName = song.getName();
     }
+
+    // 메일에 작성할 내용을 반환하는 함수를 구현하도록 강제함.
+    /**
+     * @return 메일 제목 반환
+     */
+    public abstract String makeSubject();
+
+    /**
+     * @return 메일 내용 반환
+     */
+    public abstract String makeText();
 }

@@ -4,7 +4,9 @@ import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.notification.TempSong;
 import com.petitapetit.miml.domain.notification.TempUser;
 import com.petitapetit.miml.domain.notification.TempUserRepository;
-import com.petitapetit.miml.domain.notification.model.Notification;
+import com.petitapetit.miml.domain.notification.model.FriendRequestedNotification;
+import com.petitapetit.miml.domain.notification.model.SharePlaylistRequestedNotification;
+import com.petitapetit.miml.domain.notification.model.SongAddedNotification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -29,11 +31,25 @@ public class NotificationService {
         Set<TempUser> users = userRepository.findByLikeArtistsSetContaining(song.getArtist());
 
         for (TempUser user : users) {
-            Notification notification = new Notification(user, song);
-            String userEmail = notification.getUserEmail();
-            mailService.sendEmail(userEmail);
+            SongAddedNotification notification = new SongAddedNotification(user, song);
+            mailService.sendEmail(notification);
             notificationRepository.save(notification);
         }
+    }
+
+    @EventListener
+    @Transactional
+    public void handleFriendRequestEvent(FriendRequestedEvent event) {
+        FriendRequestedNotification notification = new FriendRequestedNotification(event.getUser());
+        mailService.sendEmail(notification);
+        notificationRepository.save(notification);
+    }
+    @EventListener
+    @Transactional
+    public void handleSharePlaylistRequestEvent(SharePlaylistRequestedEvent event) {
+        SharePlaylistRequestedNotification notification = new SharePlaylistRequestedNotification(event.getTempUser());
+        mailService.sendEmail(notification);
+        notificationRepository.save(notification);
     }
 }
 
