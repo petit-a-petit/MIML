@@ -41,7 +41,8 @@ public class NotificationServiceTest extends ServiceTest {
     @DisplayName("신곡이 추가되었을 때, 해당 노래의 아티스트를 좋아요 한 사용자에게 알림이 간다.")
     public void testHandleSongEvent() {
         // given
-        TempSong song = new TempSong();
+        TempArtist artist = new TempArtist("artist");
+        TempSong song = new TempSong("newSong",artist);
         SongAddedEvent event = new SongAddedEvent(this,song);
         Set<TempUser> users = new HashSet<>();
         users.add(new TempUser());
