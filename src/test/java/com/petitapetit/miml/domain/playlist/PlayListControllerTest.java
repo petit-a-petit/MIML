@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain;
+package com.petitapetit.miml.domain.playlist;
 
 import com.google.gson.Gson;
 import com.petitapetit.miml.domain.playlist.controller.PlayListController;
@@ -35,8 +35,8 @@ public class PlayListControllerTest {
     }
 
     @Test
-    @DisplayName("POST 플레이리스트 등록 컨트롤러 로직 확인")
-    public void savePlayList() throws Exception {
+    @DisplayName("컨트롤러 플레이리스트 등록 로직 확인")
+    public void postPlayList() throws Exception {
         //given
 
         PlayListDto.Post request = new PlayListDto.Post("플레이리스트 이름", true);
