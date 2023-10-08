@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.notification.model;
+package com.petitapetit.miml.domain.notification.entity;
 
 import com.petitapetit.miml.domain.notification.TempSong;
 import com.petitapetit.miml.domain.notification.TempUser;

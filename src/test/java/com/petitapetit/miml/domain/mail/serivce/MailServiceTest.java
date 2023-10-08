@@ -1,6 +1,6 @@
 package com.petitapetit.miml.domain.mail.serivce;
 
-import com.petitapetit.miml.domain.notification.model.Notification;
+import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.test.ServiceTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

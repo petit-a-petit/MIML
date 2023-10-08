@@ -4,9 +4,10 @@ import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.notification.TempSong;
 import com.petitapetit.miml.domain.notification.TempUser;
 import com.petitapetit.miml.domain.notification.TempUserRepository;
-import com.petitapetit.miml.domain.notification.model.FriendRequestedNotification;
-import com.petitapetit.miml.domain.notification.model.SharePlaylistRequestedNotification;
-import com.petitapetit.miml.domain.notification.model.SongAddedNotification;
+import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
+import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
+import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
+import com.petitapetit.miml.domain.notification.model.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -23,7 +24,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final MailService mailService;
 
-    @EventListener
+    @EventListener(classes = SongAddedEvent.class)
     @Transactional
     public void handleSongEvent(SongAddedEvent event) {
         TempSong song = event.getSong();

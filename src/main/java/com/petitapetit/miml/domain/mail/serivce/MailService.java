@@ -1,6 +1,6 @@
 package com.petitapetit.miml.domain.mail.serivce;
 
-import com.petitapetit.miml.domain.notification.model.Notification;
+import com.petitapetit.miml.domain.notification.entity.Notification;
 
 // 메일 서비스를 실행 환경에 따라 추상화합니다.
 public interface MailService {

@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.notification.model;
+package com.petitapetit.miml.domain.notification.entity;
 
 import com.petitapetit.miml.domain.notification.TempUser;
 import lombok.Getter;
@@ -9,17 +9,17 @@ import javax.persistence.Entity;
 @Getter
 @NoArgsConstructor
 @Entity
-public class FriendRequestedNotification extends Notification {
+public class SharePlaylistRequestedNotification extends Notification {
     private String userName;
 
-    public FriendRequestedNotification(TempUser user){
+    public SharePlaylistRequestedNotification(TempUser user){
         super(user);
         this.userName = user.getEmail();
     }
 
     @Override
     public String makeSubject() {
-        return "스트리밍 서비스 친구 추가 요청 알림";
+        return "스트리밍 서비스 플레이리스트 공유 신청 알림";
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.petitapetit.miml.domain.mail.serivce;
 
-import com.petitapetit.miml.domain.notification.model.Notification;
+import com.petitapetit.miml.domain.notification.entity.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
