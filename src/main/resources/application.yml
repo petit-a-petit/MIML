@@ -1,4 +1,8 @@
 spring:
+  profiles:
+    include:
+      - jwt
+      - oauth
   jpa:
     hibernate:
       generate-ddl: true
@@ -21,4 +25,5 @@ spring:
       matching-strategy: ant_path_matcher
 logging.level:
   org.hibernate.SQL: debug
+  org.springframework.security: debug
 
