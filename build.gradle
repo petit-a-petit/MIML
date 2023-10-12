@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.16'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'jacoco'
 }
 
 group = 'com.petitapetit'
@@ -32,8 +33,44 @@ dependencies {
 
     // java mail sender
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.13'
+
+    implementation 'com.google.code.gson:gson'
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
+}
+
+jacocoTestReport {
+    reports {
+        csv.required = false
+        xml.required = false
+        html.required = true
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+            excludes = [
+                    'com.petitapetit.miml.MimlApplication',
+                    '*.*Dto',
+                    '*.*Config',
+                    '*.*Test',
+                    '*.dto.*',
+            ]
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.6
+            }
+        }
+    }
 }
