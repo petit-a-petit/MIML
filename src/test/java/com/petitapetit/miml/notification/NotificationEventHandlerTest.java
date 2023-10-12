@@ -10,10 +10,10 @@ import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
-import com.petitapetit.miml.domain.notification.model.FriendRequestedEvent;
-import com.petitapetit.miml.domain.notification.service.NotificationService;
-import com.petitapetit.miml.domain.notification.model.SharePlaylistRequestedEvent;
-import com.petitapetit.miml.domain.notification.model.SongAddedEvent;
+import com.petitapetit.miml.domain.notification.event.FriendRequestedEvent;
+import com.petitapetit.miml.domain.notification.service.NotificationEventHandler;
+import com.petitapetit.miml.domain.notification.event.SharePlaylistRequestedEvent;
+import com.petitapetit.miml.domain.notification.event.SongAddedEvent;
 import com.petitapetit.miml.test.ServiceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,10 +26,10 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
-public class NotificationServiceTest extends ServiceTest {
+public class NotificationEventHandlerTest extends ServiceTest {
 
     @InjectMocks
-    private NotificationService notificationService;
+    private NotificationEventHandler notificationEventHandler;
     @Mock
     private NotificationRepository notificationRepository;
     @Mock
@@ -50,7 +50,7 @@ public class NotificationServiceTest extends ServiceTest {
         when(userRepository.findByLikeArtistsSetContaining(any())).thenReturn(users);
 
         // when
-        notificationService.handleSongEvent(event);
+        notificationEventHandler.handleSongEvent(event);
 
         // then
         verify(mailService, times(users.size())).sendEmail(any(SongAddedNotification.class));
@@ -70,7 +70,7 @@ public class NotificationServiceTest extends ServiceTest {
         SongAddedEvent event = new SongAddedEvent(this, songByNoLikedArtists);
 
         // when
-        notificationService.handleSongEvent(event);
+        notificationEventHandler.handleSongEvent(event);
 
         // then
         verify(mailService, never()).sendEmail(any());
@@ -81,11 +81,12 @@ public class NotificationServiceTest extends ServiceTest {
     @DisplayName("친구 추가 이벤트 발생 시 mail이 보내지고 알림 내용이 저장된다.")
     void testHandleFriendRequestEvent() {
         // given
-        TempUser user = new TempUser();
-        FriendRequestedEvent event = new FriendRequestedEvent(this, user);
+        TempUser user1 = new TempUser();
+        TempUser user2 = new TempUser();
+        FriendRequestedEvent event = new FriendRequestedEvent(this, user1, user2);
 
         // when
-        notificationService.handleFriendRequestEvent(event);
+        notificationEventHandler.handleFriendRequestEvent(event);
 
         // then
         verify(mailService, times(1)).sendEmail(any(FriendRequestedNotification.class));
@@ -96,11 +97,12 @@ public class NotificationServiceTest extends ServiceTest {
     @DisplayName("플레이리스트 공유 이벤트 발생 시 mail이 보내지고 알림 내용이 저장된다.")
     void testHandleSharePlaylistRequestEvent() {
         // given
-        TempUser user = new TempUser();
-        SharePlaylistRequestedEvent event = new SharePlaylistRequestedEvent(this, user);
+        TempUser user1 = new TempUser();
+        TempUser user2 = new TempUser();
+        SharePlaylistRequestedEvent event = new SharePlaylistRequestedEvent(this, user1, user2);
 
         // when
-        notificationService.handleSharePlaylistRequestEvent(event);
+        notificationEventHandler.handleSharePlaylistRequestEvent(event);
 
         // then
         verify(mailService, times(1)).sendEmail(any(SharePlaylistRequestedNotification.class));

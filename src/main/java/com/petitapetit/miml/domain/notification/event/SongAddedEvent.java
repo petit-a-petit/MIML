@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.notification.model;
+package com.petitapetit.miml.domain.notification.event;
 
 import com.petitapetit.miml.domain.notification.TempSong;
 import org.springframework.context.ApplicationEvent;

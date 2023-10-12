@@ -10,11 +10,11 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Entity
 public class FriendRequestedNotification extends Notification {
-    private String userName;
+    private String requestedUserName;  // 친구 요청 받은 유저 이름
 
-    public FriendRequestedNotification(TempUser user){
-        super(user);
-        this.userName = user.getEmail();
+    public FriendRequestedNotification(String currentUserEmail, String requestedUserEmail){
+        super(currentUserEmail);
+        this.requestedUserName = requestedUserEmail;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class FriendRequestedNotification extends Notification {
     @Override
     public String makeText() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getUserName());
+        sb.append(getRequestedUserName());
         return sb.toString();
     }
 }

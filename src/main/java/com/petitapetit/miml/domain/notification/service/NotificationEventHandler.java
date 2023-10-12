@@ -7,7 +7,7 @@ import com.petitapetit.miml.domain.notification.TempUserRepository;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
-import com.petitapetit.miml.domain.notification.model.*;
+import com.petitapetit.miml.domain.notification.event.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -18,7 +18,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationEventHandler {
 
     private final TempUserRepository userRepository;
     private final NotificationRepository notificationRepository;
@@ -38,17 +38,17 @@ public class NotificationService {
         }
     }
 
-    @EventListener
+    @EventListener(classes = FriendRequestedEvent.class)
     @Transactional
     public void handleFriendRequestEvent(FriendRequestedEvent event) {
-        FriendRequestedNotification notification = new FriendRequestedNotification(event.getUser());
+        FriendRequestedNotification notification = new FriendRequestedNotification(event.getCurrentUserName(), event.getRequestedUserName());
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
-    @EventListener
+    @EventListener(classes = SharePlaylistRequestedEvent.class)
     @Transactional
     public void handleSharePlaylistRequestEvent(SharePlaylistRequestedEvent event) {
-        SharePlaylistRequestedNotification notification = new SharePlaylistRequestedNotification(event.getTempUser());
+        SharePlaylistRequestedNotification notification = new SharePlaylistRequestedNotification(event.getCurrentUserEmail(), event.getRequestedUserEmail());
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }

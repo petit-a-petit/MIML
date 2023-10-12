@@ -1,6 +1,6 @@
 package com.petitapetit.miml.domain.notification;
 
-import com.petitapetit.miml.domain.notification.model.SongAddedEvent;
+import com.petitapetit.miml.domain.notification.event.SongAddedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

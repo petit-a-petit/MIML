@@ -23,8 +23,8 @@ public abstract class Notification {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Notification(TempUser user){
-        this.userEmail = user.getEmail();
+    public Notification(String requestedUserEmail){
+        this.userEmail = requestedUserEmail;
     }
 
     // 메일에 작성할 내용을 반환하는 함수를 구현하도록 강제함.
