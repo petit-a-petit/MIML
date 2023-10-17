@@ -12,6 +12,8 @@ import com.petitapetit.miml.domain.notification.repository.NotificationRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -24,8 +26,7 @@ public class NotificationEventHandler {
     private final NotificationRepository notificationRepository;
     private final MailService mailService;
 
-    @EventListener(classes = SongAddedEvent.class)
-    @Transactional
+    @TransactionalEventListener(classes = SongAddedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     public void handleSongEvent(SongAddedEvent event) {
         TempSong song = event.getSong();
 
@@ -38,15 +39,13 @@ public class NotificationEventHandler {
         }
     }
 
-    @EventListener(classes = FriendRequestedEvent.class)
-    @Transactional
+    @TransactionalEventListener(classes = FriendRequestedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     public void handleFriendRequestEvent(FriendRequestedEvent event) {
         FriendRequestedNotification notification = new FriendRequestedNotification(event.getCurrentUserName(), event.getRequestedUserName());
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
-    @EventListener(classes = SharePlaylistRequestedEvent.class)
-    @Transactional
+    @TransactionalEventListener(classes = SharePlaylistRequestedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     public void handleSharePlaylistRequestEvent(SharePlaylistRequestedEvent event) {
         SharePlaylistRequestedNotification notification = new SharePlaylistRequestedNotification(event.getCurrentUserEmail(), event.getRequestedUserEmail());
         mailService.sendEmail(notification);
