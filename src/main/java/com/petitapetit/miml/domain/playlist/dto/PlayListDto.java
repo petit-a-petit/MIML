@@ -14,4 +14,10 @@ public class PlayListDto {
         private String name;
         private Boolean isPublic;
     }
+
+    @AllArgsConstructor @NoArgsConstructor
+    @Builder @Getter
+    public static class SaveResponse {
+        private Long playListId;
+    }
 }

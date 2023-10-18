@@ -14,10 +14,12 @@ public class PlayListService {
     private final PlayListRepository playListRepository;
     private final PlayListMapperImpl playListMapper;
 
-    public PlayList savePlayList(PlayListDto.SaveRequest request, Long memberId) {
+    public PlayListDto.SaveResponse savePlayList(PlayListDto.SaveRequest request, Long memberId) {
 
         PlayList playList = playListMapper.SaveRequestToPlayList(request, memberId);
 
-        return playListRepository.save(playList);
+        PlayList savedPlayList = playListRepository.save(playList);
+
+        return playListMapper.PlayListToSaveResponse(savedPlayList);
     }
 }

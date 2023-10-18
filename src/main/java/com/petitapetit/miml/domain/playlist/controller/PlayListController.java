@@ -17,11 +17,11 @@ public class PlayListController {
     private final PlayListService playListService;
 
     @PostMapping
-    public ResponseEntity postPlayList(@RequestBody PlayListDto.SaveRequest request){
+    public ResponseEntity<PlayListDto.SaveResponse> postPlayList(@RequestBody PlayListDto.SaveRequest request){
 
         Long memberId = 1L; //mock
-        playListService.savePlayList(request , memberId);
+        PlayListDto.SaveResponse response = playListService.savePlayList(request , memberId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(response);
     }
 }

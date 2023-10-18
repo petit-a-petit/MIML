@@ -13,4 +13,6 @@ public interface PlayListMapper {
                 .memberId(memberId)
                 .isPublic(saveRequest.getIsPublic()).build();
     }
+
+    PlayListDto.SaveResponse PlayListToSaveResponse(PlayList savedPlayList);
 }
