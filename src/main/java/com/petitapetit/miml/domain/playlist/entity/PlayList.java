@@ -24,5 +24,5 @@ public class PlayList {
 
     private Long memberId;
 
-    private boolean publicYN;
+    private Boolean isPublic;
 }
