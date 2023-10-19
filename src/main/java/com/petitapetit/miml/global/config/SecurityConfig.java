@@ -19,12 +19,10 @@ import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationFailur
 import lombok.RequiredArgsConstructor;
 
 @EnableWebSecurity
-// @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-	// private final TokenProvider tokenProvider;
 	private final CustomOauth2UserService customOauth2UserService;
 	private final CustomOAuth2AuthenticationSuccessHandler customHandler;
 	private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
@@ -32,11 +30,6 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
 		throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
-	}
-
-	@Bean
-	public RequestCache requestCache() {
-		return new HttpSessionRequestCache();
 	}
 
 	@Bean

@@ -40,9 +40,6 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 		if (registrationId.equals(OAuth2Provider.SPOTIFY.getProviderName())) {
 			oAuth2UserInfo = new SpotifyUserInfo(oAuth2User.getAttributes());
 		}
-		// else if (registrationId.equals(OAuth2Provider.NAVER.getProviderName())) {
-		// 	oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
-		// }
 
 		Optional<Member> userOptional =
 			memberRepository.findByProviderAndProviderId(oAuth2UserInfo.getProvider(),
