@@ -30,7 +30,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
     // gson
     implementation 'com.google.code.gson:gson'
 
@@ -44,8 +43,6 @@ dependencies {
 
     // java mail sender
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.13'
-
-    implementation 'com.google.code.gson:gson'
 }
 
 tasks.named('test') {
