@@ -9,9 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,18 +32,19 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
 
 		OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
 		CustomOAuth2User oauthUser = (CustomOAuth2User) oauthToken.getPrincipal();
-
 		String accessToken = oauthUser.getAccessToken();
 
-		String targetUrl = createTargetUrl(accessToken);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String originalRequestUri = (String) request.getSession().getAttribute("originalRequestUri");
+
+		String targetUrl = createTargetUrl(originalRequestUri);
 		getRedirectStrategy().sendRedirect(request, response, targetUrl);
 	}
 
-	private String createTargetUrl(String accessToken)
+	private String createTargetUrl(String uri)
 		throws UnsupportedEncodingException {
 		return UriComponentsBuilder
-			.fromUriString(callbackUrlScheme + "auth/success-login") // /auth 아니고 auth
-			.queryParam("token", accessToken)
+			.fromUriString(callbackUrlScheme + uri)
 			.build().toUriString();
 	}
 }
