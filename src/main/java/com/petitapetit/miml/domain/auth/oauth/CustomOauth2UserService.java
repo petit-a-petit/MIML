@@ -12,6 +12,7 @@ import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
 import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2UserInfo;
 import com.petitapetit.miml.domain.auth.oauth.provider.SpotifyUserInfo;
 import com.petitapetit.miml.domain.member.model.Member;
+import com.petitapetit.miml.domain.member.model.MemberId;
 import com.petitapetit.miml.domain.member.model.RoleType;
 import com.petitapetit.miml.domain.member.repository.MemberRepository;
 
@@ -41,9 +42,12 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 			oAuth2UserInfo = new SpotifyUserInfo(oAuth2User.getAttributes());
 		}
 
-		Optional<Member> userOptional =
-			memberRepository.findByProviderAndProviderId(oAuth2UserInfo.getProvider(),
-				oAuth2UserInfo.getProviderId());
+		MemberId memberId = MemberId.builder()
+			.provider(oAuth2UserInfo.getProvider())
+			.providerId(oAuth2UserInfo.getProviderId())
+			.build();
+
+		Optional<Member> userOptional = memberRepository.findById(memberId);
 
 		boolean isFirst; // 최초 로그인 여부
 		if (userOptional.isPresent()) { // 이미 가입한 회원이라면
@@ -54,13 +58,11 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 		} else {
 			isFirst = true;
 
-			// user의 패스워드가 null이기 때문에 OAuth 유저는 일반적인 로그인을 할 수 없음.
 			member = Member.builder()
 				.name(oAuth2UserInfo.getName())
 				.email(oAuth2UserInfo.getEmail())
 				.role(RoleType.ROLE_USER)
-				.provider(oAuth2UserInfo.getProvider())
-				.providerId(oAuth2UserInfo.getProviderId())
+				.id(memberId)
 				.image(oAuth2UserInfo.getImage())
 				.build();
 			memberRepository.save(member);

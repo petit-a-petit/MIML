@@ -7,13 +7,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.petitapetit.miml.domain.member.model.Member;
-import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
+import com.petitapetit.miml.domain.member.model.MemberId;
 
 @Repository
 @Transactional
-public interface MemberRepository extends JpaRepository<Member, Long> {
-	Optional<Member> findByProviderId(String providerId);
-
-	Optional<Member> findByProviderAndProviderId(OAuth2Provider provider, String providerId);
-
+public interface MemberRepository extends JpaRepository<Member, MemberId> {
+	Optional<Member> findById(MemberId id);
 }

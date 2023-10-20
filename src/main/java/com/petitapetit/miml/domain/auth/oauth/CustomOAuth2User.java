@@ -29,10 +29,10 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 	 */
 	public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, Member user, boolean isFirst, String accessToken) {
 		super(List.of(new SimpleGrantedAuthority(user.getRole().name())), oAuth2UserInfo.getAttributes(),
-			user.getProvider().getAttributeKey());
+			user.getId().getProvider().getAttributeKey());
 		this.user = user;
 		this.isFirst = isFirst;
-		this.providerName = user.getProvider().getProviderName();
+		this.providerName = user.getId().getProvider().getProviderName();
 		this.accessToken = accessToken;
 	}
 
