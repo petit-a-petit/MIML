@@ -28,40 +28,44 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
-		return processOAuth2User(userRequest, oAuth2User);
+		OAuth2UserInfo oAuth2UserInfo = getOAuth2UserInfo(userRequest, oAuth2User);
+		return new CustomOAuth2User(
+			oAuth2UserInfo,
+			getOrCreateMember(oAuth2UserInfo),
+			userRequest.getAccessToken().getTokenValue()
+		);
 	}
 
-	private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
-		OAuth2UserInfo oAuth2UserInfo = null;
-
-		// OAuth2 서비스 제공자 구분
+	private OAuth2UserInfo getOAuth2UserInfo(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
 		String registrationId = userRequest.getClientRegistration().getRegistrationId();
 		if (registrationId.equals(OAuth2Provider.SPOTIFY.getProviderName())) {
-			oAuth2UserInfo = new SpotifyUserInfo(oAuth2User.getAttributes());
+			return new SpotifyUserInfo(oAuth2User.getAttributes());
 		}
+		return null;
+	}
 
+	private Member getOrCreateMember(OAuth2UserInfo oAuth2UserInfo) {
 		MemberId memberId = MemberId.builder()
 			.provider(oAuth2UserInfo.getProvider())
 			.providerId(oAuth2UserInfo.getProviderId())
 			.build();
+		Member existingMember = getExistingMember(memberId);
+		return existingMember != null ? existingMember : createMember(oAuth2UserInfo, memberId);
+	}
 
+	private Member getExistingMember(MemberId memberId) {
 		Optional<Member> oMember = memberRepository.findById(memberId);
-		Member member;
+		return oMember.orElse(null); // 회원이 없으면 null 반환
+	}
 
-		if (oMember.isPresent()) {
-			member = oMember.get();
-		}
-		else {
-			member = Member.builder()
-				.name(oAuth2UserInfo.getName())
-				.email(oAuth2UserInfo.getEmail())
-				.role(RoleType.ROLE_USER)
-				.id(memberId)
-				.image(oAuth2UserInfo.getImage())
-				.build();
-			memberRepository.save(member);
-		}
-
-		return new CustomOAuth2User(oAuth2UserInfo, member, userRequest.getAccessToken().getTokenValue());
+	private Member createMember(OAuth2UserInfo oAuth2UserInfo, MemberId memberId) {
+		Member member = Member.builder()
+			.id(memberId)
+			.name(oAuth2UserInfo.getName())
+			.email(oAuth2UserInfo.getEmail())
+			.role(RoleType.ROLE_USER)
+			.image(oAuth2UserInfo.getImage())
+			.build();
+		return memberRepository.save(member);
 	}
 }
