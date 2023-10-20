@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    include:
+      - oauth
   jpa:
     hibernate:
       generate-ddl: true
@@ -36,4 +39,5 @@ spring:
             enable: true
 logging.level:
   org.hibernate.SQL: debug
+  org.springframework.security: debug
 
