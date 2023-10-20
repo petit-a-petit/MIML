@@ -1,7 +1,6 @@
 spring:
   profiles:
     include:
-      - jwt
       - oauth
   jpa:
     hibernate:

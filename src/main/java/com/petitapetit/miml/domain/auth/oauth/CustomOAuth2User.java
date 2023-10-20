@@ -18,7 +18,6 @@ import lombok.Getter;
 public class CustomOAuth2User extends DefaultOAuth2User {
 
 	private Member user;
-	private boolean isFirst; // 최초 로그인 여부
 	private String providerName; // spotify, kakao, naver
 	private String accessToken; // spotify에서 내려준 access token
 
@@ -27,11 +26,10 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 	 * @param oAuth2UserInfo OAuth2 사용자 정보 객체
 	 * @param user OAuth2 계정 정보를 기반으로 생성/조회한 사용자 계정 엔티티
 	 */
-	public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, Member user, boolean isFirst, String accessToken) {
+	public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, Member user, String accessToken) {
 		super(List.of(new SimpleGrantedAuthority(user.getRole().name())), oAuth2UserInfo.getAttributes(),
 			user.getId().getProvider().getAttributeKey());
 		this.user = user;
-		this.isFirst = isFirst;
 		this.providerName = user.getId().getProvider().getProviderName();
 		this.accessToken = accessToken;
 	}

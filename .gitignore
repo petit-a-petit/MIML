@@ -39,4 +39,3 @@ out/
 .env
 .DS_Store
 application-oauth.yml
-application-jwt.yml
