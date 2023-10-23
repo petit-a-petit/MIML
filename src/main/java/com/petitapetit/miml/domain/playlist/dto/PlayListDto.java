@@ -19,5 +19,16 @@ public class PlayListDto {
     @Builder @Getter
     public static class SaveResponse {
         private Long playListId;
+        private String name;
+        private Boolean isPublic;
+    }
+
+    @AllArgsConstructor @NoArgsConstructor
+    @Builder @Getter
+    public static class Response {
+        private String name;
+        private Boolean isPublic;
+        //등록된 노래
+        //소유자 이름
     }
 }
