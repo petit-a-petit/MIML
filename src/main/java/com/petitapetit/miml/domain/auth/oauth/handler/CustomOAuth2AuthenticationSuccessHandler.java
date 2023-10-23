@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
+import com.petitapetit.miml.global.util.SessionUtil;
 
 @Component
 public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -35,7 +36,7 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
 		String accessToken = oauthUser.getAccessToken();
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String originalRequestUri = (String) request.getSession().getAttribute("originalRequestUri");
+		String originalRequestUri = SessionUtil.getOriginalRequestUri(request.getSession());
 
 		String targetUrl = createTargetUrl(originalRequestUri);
 		getRedirectStrategy().sendRedirect(request, response, targetUrl);
