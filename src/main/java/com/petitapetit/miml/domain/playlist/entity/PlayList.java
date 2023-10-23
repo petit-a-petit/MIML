@@ -1,9 +1,6 @@
 package com.petitapetit.miml.domain.playlist.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +11,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
+@Getter @Setter
 public class PlayList {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
