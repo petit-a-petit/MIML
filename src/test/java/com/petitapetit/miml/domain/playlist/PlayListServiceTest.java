@@ -1,6 +1,8 @@
 package com.petitapetit.miml.domain.playlist;
 
+import com.petitapetit.miml.domain.playlist.dto.PlayListDto;
 import com.petitapetit.miml.domain.playlist.entity.PlayList;
+import com.petitapetit.miml.domain.playlist.mapper.PlayListMapper;
 import com.petitapetit.miml.domain.playlist.repository.PlayListRepository;
 import com.petitapetit.miml.domain.playlist.service.PlayListService;
 import org.junit.jupiter.api.DisplayName;
@@ -20,27 +22,41 @@ public class PlayListServiceTest {
     private PlayListService playListService;
 
     @Mock
+    private PlayListMapper playListMapper;
+
+    @Mock
     private PlayListRepository playListRepository;
 
     @DisplayName("서비스 플레이리스트 등록 로직 확인")
     @Test
     public void savePlayList(){
         //given
-        PlayList request = PlayList.builder()
+        PlayListDto.SaveRequest saveRequest = PlayListDto.SaveRequest.builder()
+                .name("플레이리스트 이름")
+                .isPublic(true)
+                .build();
+
+        PlayList playList = PlayList.builder()
                 .playListId(1L)
                 .name("플레이리스트 이름")
+                .isPublic(true)
                 .memberId(1L)
-                .publicYN(true).build();
+                .build();
 
-        doReturn(new PlayList(1L, "플레이리스트 이름", 1L, true)).when(playListRepository).save(request);
+        PlayListDto.SaveResponse saveResponse = PlayListDto.SaveResponse.builder()
+                        .playListId(1L).build();
+
+
+        doReturn(playList).when(playListMapper).SaveRequestToPlayList(saveRequest, 1L);
+        doReturn(playList).when(playListRepository).save(playList);
+        doReturn(saveResponse).when(playListMapper).PlayListToSaveResponse(playList);
+
 
         //when
-        PlayList savedPlayList = playListService.savePlayList(request);
+        PlayListDto.SaveResponse savedPlayList = playListService.savePlayList(saveRequest, 1L);
 
         //then
-        assertThat(savedPlayList.getPlayListId()).isEqualTo(request.getPlayListId());
-        assertThat(savedPlayList.getName()).isEqualTo("플레이리스트 이름");
-        assertThat(savedPlayList.getMemberId()).isEqualTo(1L);
-        assertThat(savedPlayList.isPublicYN()).isTrue();
+        assertThat(savedPlayList.getPlayListId()).isEqualTo(1L);
+
     }
 }

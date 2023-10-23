@@ -2,7 +2,7 @@ package com.petitapetit.miml.domain.playlist.service;
 
 import com.petitapetit.miml.domain.playlist.dto.PlayListDto;
 import com.petitapetit.miml.domain.playlist.entity.PlayList;
-import com.petitapetit.miml.domain.playlist.mapper.PlayListMapperImpl;
+import com.petitapetit.miml.domain.playlist.mapper.PlayListMapper;
 import com.petitapetit.miml.domain.playlist.repository.PlayListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class PlayListService {
 
     private final PlayListRepository playListRepository;
-    private final PlayListMapperImpl playListMapper;
+    private final PlayListMapper playListMapper;
 
     public PlayListDto.SaveResponse savePlayList(PlayListDto.SaveRequest request, Long memberId) {
 
@@ -23,3 +23,4 @@ public class PlayListService {
         return playListMapper.PlayListToSaveResponse(savedPlayList);
     }
 }
+
