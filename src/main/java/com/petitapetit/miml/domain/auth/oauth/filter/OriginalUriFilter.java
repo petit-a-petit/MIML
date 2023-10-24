@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.petitapetit.miml.global.util.SessionUtil;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -18,9 +20,7 @@ public class OriginalUriFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
 
-		String originalRequestUri = request.getRequestURI();
-		request.getSession().setAttribute("originalRequestUri", originalRequestUri);
-
+		SessionUtil.setOriginalRequestUri(request.getSession(), request.getRequestURI());
 		filterChain.doFilter(request, response);
 	}
 }
