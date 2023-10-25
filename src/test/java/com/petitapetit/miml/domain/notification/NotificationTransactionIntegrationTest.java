@@ -1,9 +1,7 @@
-package com.petitapetit.miml.notification;
+package com.petitapetit.miml.domain.notification;
 
 import com.petitapetit.miml.domain.mail.serivce.MailService;
-import com.petitapetit.miml.domain.notification.*;
 import com.petitapetit.miml.domain.notification.entity.Notification;
-import com.petitapetit.miml.domain.notification.event.SongAddedEvent;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

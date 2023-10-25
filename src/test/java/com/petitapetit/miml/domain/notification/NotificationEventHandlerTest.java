@@ -1,7 +1,6 @@
-package com.petitapetit.miml.notification;
+package com.petitapetit.miml.domain.notification;
 
 import com.petitapetit.miml.domain.mail.serivce.MailService;
-import com.petitapetit.miml.domain.notification.*;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
