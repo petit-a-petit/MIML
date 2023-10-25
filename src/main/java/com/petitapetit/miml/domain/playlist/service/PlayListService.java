@@ -4,13 +4,13 @@ import com.petitapetit.miml.domain.playlist.dto.PlayListDto;
 import com.petitapetit.miml.domain.playlist.entity.PlayList;
 import com.petitapetit.miml.domain.playlist.mapper.PlayListMapper;
 import com.petitapetit.miml.domain.playlist.repository.PlayListRepository;
+import com.petitapetit.miml.global.exception.CommonErrorCode;
+import com.petitapetit.miml.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -78,13 +78,12 @@ public class PlayListService {
 
     private void checkAuthorization(Long memberId, PlayList playList) {
         if(!Objects.equals(playList.getPlayListId(), memberId)){
-            throw new RuntimeException(String.valueOf(HttpStatus.UNAUTHORIZED)); //추후 예외처리 정리 예정
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND); //추후 상태 코드 결정
         }
     }
 
     private PlayList checkExistence(Long PlayListId) {
         Optional<PlayList> optional = playListRepository.findById(PlayListId);
-        return optional.orElseThrow(NoSuchElementException::new); //추후 예외처리 정리 예정
+        return optional.orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND)); //추후 상태 코드 결정
     }
 }
-
