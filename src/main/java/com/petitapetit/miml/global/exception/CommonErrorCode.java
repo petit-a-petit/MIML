@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum CommonErrorCode implements ErrorCode{
 
-    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Resource not exists");
+    FORBIDDEN(HttpStatus.FORBIDDEN, "플레이리스트에 대한 권한이 없습니다."),
+    PLAYLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "플레이리스트가 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
+
 }
