@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PlayListMapper {
-    default PlayList SaveRequestToPlayList(PlayListDto.SaveRequest saveRequest, Long memberId){
+    default PlayList saveRequestToPlayList(PlayListDto.SaveRequest saveRequest, Long memberId){
 
         return PlayList.builder()
                 .name(saveRequest.getName())
@@ -16,9 +16,9 @@ public interface PlayListMapper {
                 .isPublic(saveRequest.getIsPublic()).build();
     }
 
-    PlayListDto.SaveResponse PlayListToSaveResponse(PlayList savedPlayList);
+    PlayListDto.SaveResponse playListToSaveResponse(PlayList savedPlayList);
 
-    PlayListDto.Response PlayListToResponse(PlayList playList);
+    PlayListDto.Response playListToResponse(PlayList playList);
 
-    List<PlayListDto.Response> PlayListsToResponse(List<PlayList> playLists);
+    List<PlayListDto.Response> playListsToResponse(List<PlayList> playLists);
 }
