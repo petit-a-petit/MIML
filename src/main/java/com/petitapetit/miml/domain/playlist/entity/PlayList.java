@@ -22,4 +22,12 @@ public class PlayList {
     private Long memberId;
 
     private Boolean isPublic;
+
+    public void updateIsPublic(Boolean isPublic){
+        this.isPublic = isPublic;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }
