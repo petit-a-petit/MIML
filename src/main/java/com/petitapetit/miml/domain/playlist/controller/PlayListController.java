@@ -41,17 +41,17 @@ public class PlayListController {
     }
 
     @GetMapping("/{play_list_id}")
-    public ResponseEntity<PlayListDto.Response> getPlayListDetail(@PathVariable("play_list_id") Long playListId){
+    public ResponseEntity<PlayListDto.DetailResponse> getPlayListDetail(@PathVariable("play_list_id") Long playListId){
 
-        PlayListDto.Response response = playListService.getPlayListById(playListId);
+        PlayListDto.DetailResponse response = playListService.getPlayListById(playListId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<PlayListDto.Response>> getPlayLists(){
+    public ResponseEntity<List<PlayListDto.DetailResponse>> getPlayLists(){
 
-        List<PlayListDto.Response> response = playListService.getPlayLists();
+        List<PlayListDto.DetailResponse> response = playListService.getPlayLists();
 
         return ResponseEntity.ok(response);
     }
