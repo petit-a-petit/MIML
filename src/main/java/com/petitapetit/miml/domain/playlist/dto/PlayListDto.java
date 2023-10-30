@@ -25,7 +25,7 @@ public class PlayListDto {
 
     @AllArgsConstructor @NoArgsConstructor
     @Builder @Getter
-    public static class Response {
+    public static class DetailResponse {
         private String name;
         private Boolean isPublic;
         //등록된 노래
