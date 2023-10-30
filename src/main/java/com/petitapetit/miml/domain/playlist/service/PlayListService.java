@@ -4,9 +4,10 @@ import com.petitapetit.miml.domain.playlist.dto.PlayListDto;
 import com.petitapetit.miml.domain.playlist.entity.PlayList;
 import com.petitapetit.miml.domain.playlist.mapper.PlayListMapper;
 import com.petitapetit.miml.domain.playlist.repository.PlayListRepository;
+import com.petitapetit.miml.global.exception.BusinessException;
 import com.petitapetit.miml.global.exception.CommonErrorCode;
-import com.petitapetit.miml.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,8 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
+@Slf4j
 public class PlayListService {
 
     private final PlayListRepository playListRepository;
@@ -23,41 +26,45 @@ public class PlayListService {
 
     public PlayListDto.SaveResponse savePlayList(PlayListDto.SaveRequest request, Long memberId) {
 
-        PlayList playList = playListMapper.SaveRequestToPlayList(request, memberId);
+        PlayList playList = playListMapper.saveRequestToPlayList(request, memberId);
 
         PlayList savedPlayList = playListRepository.save(playList);
 
-        return playListMapper.PlayListToSaveResponse(savedPlayList);
+        return playListMapper.playListToSaveResponse(savedPlayList);
     }
 
     public PlayListDto.SaveResponse modifyPlayList(Long playListId, PlayListDto.SaveRequest request, Long memberId) {
+
         PlayList playList = getVerifiedPlaylist(playListId, memberId);
 
-        if (request.getIsPublic() != null) {
-            playList.setIsPublic(request.getIsPublic());
-        }
+        PlayList modifiedPlayList = updatePlayListAttributes(request, playList);
 
-        if(request.getName() != null){
-            playList.setName(request.getName());
-        }
-
-        PlayList modifiedPlayList = playListRepository.save(playList);
-
-        return playListMapper.PlayListToSaveResponse(modifiedPlayList);
+        return playListMapper.playListToSaveResponse(modifiedPlayList);
     }
 
-    public PlayListDto.Response getPlayListById(Long playListId) {
+    private PlayList updatePlayListAttributes(PlayListDto.SaveRequest request, PlayList playList) {
+
+        Optional.ofNullable(request.getIsPublic())
+                .ifPresent(isPublic -> playList.updateIsPublic(request.getIsPublic()));
+
+        Optional.ofNullable(request.getName())
+                .ifPresent(name -> playList.updateName(request.getName()));
+
+        return playList;
+    }
+
+    public PlayListDto.DetailResponse getPlayListById(Long playListId) {
 
         PlayList playList = checkExistence(playListId);
 
-        return playListMapper.PlayListToResponse(playList);
+        return playListMapper.playListToDetailResponse(playList);
     }
 
-    public List<PlayListDto.Response> getPlayLists(){
+    public List<PlayListDto.DetailResponse> getPlayLists(){
 
         List<PlayList> playLists = playListRepository.findAll();
 
-        return playListMapper.PlayListsToResponse(playLists);
+        return playListMapper.playListsToDetailResponseLists(playLists);
     }
 
     public void deletePlayList(Long playListId, Long memberId){
@@ -67,7 +74,6 @@ public class PlayListService {
         playListRepository.delete(playList);
     }
 
-    @Transactional
     public PlayList getVerifiedPlaylist(Long playListId, Long memberId) {
 
         PlayList playList = checkExistence(playListId);
@@ -77,13 +83,16 @@ public class PlayListService {
     }
 
     private void checkAuthorization(Long memberId, PlayList playList) {
-        if(!Objects.equals(playList.getPlayListId(), memberId)){
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND); //추후 상태 코드 결정
+
+        if(!Objects.equals(playList.getMemberId(), memberId)){
+            throw new BusinessException(CommonErrorCode.FORBIDDEN);
         }
+
     }
 
-    private PlayList checkExistence(Long PlayListId) {
-        Optional<PlayList> optional = playListRepository.findById(PlayListId);
-        return optional.orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND)); //추후 상태 코드 결정
+    private PlayList checkExistence(Long playListId) {
+
+        return playListRepository.findById(playListId).orElseThrow(
+                () -> new BusinessException(CommonErrorCode.PLAYLIST_NOT_FOUND));
     }
 }

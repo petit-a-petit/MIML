@@ -18,7 +18,7 @@ public interface PlayListMapper {
 
     PlayListDto.SaveResponse playListToSaveResponse(PlayList savedPlayList);
 
-    PlayListDto.Response playListToResponse(PlayList playList);
+    PlayListDto.DetailResponse playListToDetailResponse(PlayList playList);
 
-    List<PlayListDto.Response> playListsToResponse(List<PlayList> playLists);
+    List<PlayListDto.DetailResponse> playListsToDetailResponseLists(List<PlayList> playLists);
 }
