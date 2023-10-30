@@ -1,10 +1,6 @@
-package com.petitapetit.miml.notification;
+package com.petitapetit.miml.domain.notification;
 
 import com.petitapetit.miml.domain.mail.serivce.MailService;
-import com.petitapetit.miml.domain.notification.TempArtist;
-import com.petitapetit.miml.domain.notification.TempSong;
-import com.petitapetit.miml.domain.notification.TempUser;
-import com.petitapetit.miml.domain.notification.TempUserRepository;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
@@ -64,10 +60,10 @@ public class NotificationEventHandlerTest extends ServiceTest {
         TempArtist artist = new TempArtist("artist");
         Set<TempUser> noUsers = Collections.emptySet();
 
-        when(userRepository.findByLikeArtistsSetContaining(artist)).thenReturn(noUsers);
-
         TempSong songByNoLikedArtists = new TempSong("song", artist);
         SongAddedEvent event = new SongAddedEvent(this, songByNoLikedArtists);
+
+        when(userRepository.findByLikeArtistsSetContaining(artist)).thenReturn(noUsers);
 
         // when
         notificationEventHandler.handleSongEvent(event);

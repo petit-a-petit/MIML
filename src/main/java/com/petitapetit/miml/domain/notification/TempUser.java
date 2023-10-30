@@ -17,7 +17,7 @@ public class TempUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_artist_mapping",
             joinColumns = {@JoinColumn(name = "temp_user_id")},
             inverseJoinColumns = {@JoinColumn(name = "temp_artist_id")})
