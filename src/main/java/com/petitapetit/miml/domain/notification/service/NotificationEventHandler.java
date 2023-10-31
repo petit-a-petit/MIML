@@ -11,6 +11,7 @@ import com.petitapetit.miml.domain.notification.event.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class NotificationEventHandler {
 
     @TransactionalEventListener(classes = SongAddedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
     public void handleSongEvent(SongAddedEvent event) {
         log.info("이벤트 감지 : {}",event);
         log.info("현재 스레드 정보 : {}", Thread.currentThread());

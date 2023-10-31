@@ -3,14 +3,18 @@ package com.petitapetit.miml.domain.notification;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,6 +36,9 @@ public class NotificationTransactionIntegrationTest {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Qualifier("taskExecutor")
+    @Autowired
+    private Executor executor;
 
     @BeforeEach
     public void setUp() {
@@ -87,7 +94,7 @@ public class NotificationTransactionIntegrationTest {
 
     @Test
     @DisplayName("음악 생성이 성공 시 알림이 저장되어야 한다.")
-    public void testEventOnSongCreationSuccess() {
+    public void testEventOnSongCreationSuccess() throws InterruptedException {
         // given: 유저 생성, 아티스트 이름과 노래 이름 설정
         String artistName = "Artist1";
         String songName = "Song1";
@@ -101,10 +108,14 @@ public class NotificationTransactionIntegrationTest {
         // when: addNewSong 메소드 호출
         tempSongService.addNewSong(artistName, songName);
 
+        // 비동기 작업 종료 대기
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) executor;
+        threadPoolTaskExecutor.getThreadPoolExecutor().awaitTermination(1, TimeUnit.SECONDS);
+
         // then: 신곡 추가 이벤트가 발생했음을 확인
-        List<TempSong> users = tempSongRepository.findAll();
+        List<TempSong> songs = tempSongRepository.findAll();
         List<Notification> notifications = notificationRepository.findAll();
-        assertFalse(users.isEmpty());
+        assertFalse(songs.isEmpty());
         assertFalse(notifications.isEmpty());
     }
 }
