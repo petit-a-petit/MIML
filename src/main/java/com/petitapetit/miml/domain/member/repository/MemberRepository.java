@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
 import com.petitapetit.miml.domain.member.model.Member;
-import com.petitapetit.miml.domain.member.model.MemberId;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, MemberId> {
-	Optional<Member> findById(MemberId id);
+public interface MemberRepository extends JpaRepository<Member, Long> {
+	Optional<Member> findByProviderAndProviderId(OAuth2Provider oAuth2Provider, String providerId);
 }
