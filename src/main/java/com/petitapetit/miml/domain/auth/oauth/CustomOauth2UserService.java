@@ -8,11 +8,11 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.petitapetit.miml.domain.auth.oauth.exception.NotRegisteredProviderException;
 import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
 import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2UserInfo;
 import com.petitapetit.miml.domain.auth.oauth.provider.SpotifyUserInfo;
 import com.petitapetit.miml.domain.member.model.Member;
-import com.petitapetit.miml.domain.member.model.MemberId;
 import com.petitapetit.miml.domain.member.model.RoleType;
 import com.petitapetit.miml.domain.member.repository.MemberRepository;
 
@@ -41,30 +41,30 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 		if (registrationId.equals(OAuth2Provider.SPOTIFY.getProviderName())) {
 			return new SpotifyUserInfo(oAuth2User.getAttributes());
 		}
-		return null;
+		throw new NotRegisteredProviderException();
 	}
 
 	private Member getOrCreateMember(OAuth2UserInfo oAuth2UserInfo) {
-		MemberId memberId = MemberId.builder()
-			.provider(oAuth2UserInfo.getProvider())
-			.providerId(oAuth2UserInfo.getProviderId())
-			.build();
-		Member existingMember = getExistingMember(memberId);
-		return existingMember != null ? existingMember : createMember(oAuth2UserInfo, memberId);
+		Member existingMember = getExistingMember(oAuth2UserInfo);
+		return existingMember != null ? existingMember : createMember(oAuth2UserInfo);
 	}
 
-	private Member getExistingMember(MemberId memberId) {
-		Optional<Member> oMember = memberRepository.findById(memberId);
+	private Member getExistingMember(OAuth2UserInfo oAuth2UserInfo) {
+		Optional<Member> oMember = memberRepository.findByProviderAndProviderId(
+			oAuth2UserInfo.getProvider(),
+			oAuth2UserInfo.getProviderId()
+		);
 		return oMember.orElse(null); // 회원이 없으면 null 반환
 	}
 
-	private Member createMember(OAuth2UserInfo oAuth2UserInfo, MemberId memberId) {
+	private Member createMember(OAuth2UserInfo oAuth2UserInfo) {
 		Member member = Member.builder()
-			.id(memberId)
 			.name(oAuth2UserInfo.getName())
 			.email(oAuth2UserInfo.getEmail())
 			.role(RoleType.ROLE_USER)
 			.image(oAuth2UserInfo.getImage())
+			.provider(oAuth2UserInfo.getProvider())
+			.providerId(oAuth2UserInfo.getProviderId())
 			.build();
 		return memberRepository.save(member);
 	}
