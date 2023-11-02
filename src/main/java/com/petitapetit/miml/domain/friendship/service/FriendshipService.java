@@ -1,5 +1,8 @@
 package com.petitapetit.miml.domain.friendship.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
@@ -40,5 +43,21 @@ public class FriendshipService {
 			.fromMember(toMember)
 			.isFriend(Boolean.FALSE)
 			.build());
+	}
+
+	// 내가 친구 요청 보낸 친구 조회 기능 (fromMember: 나 / toMember: 상대방)
+	public List<FriendshipDto.toMemberResponse> getToMemberList(CustomOAuth2User oAuth2User) {
+		// fromMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회
+		List<Friendship> toMembers = friendshipRepository.findFriendshipsByFromMemberAndIsFriend(
+			oAuth2User.getUser(), Boolean.FALSE);
+
+		return toMembers.stream()
+			.map(friendship -> FriendshipDto.toMemberResponse.builder()
+				.toMemberId(friendship.getToMember().getMemberId())
+				.toMemberName(friendship.getToMember().getName())
+				.createdAt(friendship.getCreatedAt())
+				.build()
+			)
+			.collect(Collectors.toList());
 	}
 }
