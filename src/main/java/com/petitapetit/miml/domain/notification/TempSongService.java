@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +27,7 @@ public class TempSongService {
         tempSongRepository.save(newSong);
 
         // song 추가 이벤트 생성 및 발행
-        SongAddedEvent songAddedEvent = new SongAddedEvent(this, newSong);
+        SongAddedEvent songAddedEvent = new SongAddedEvent(newSong);
         try {
             applicationEventPublisher.publishEvent(songAddedEvent);
         } catch (Exception e) {
@@ -37,7 +36,7 @@ public class TempSongService {
     }
 
     private void checkInputValue(String artistName, String songName) {
-        if(artistName == null || songName == null) {
+        if (artistName == null || songName == null) {
             throw new IllegalArgumentException();
         }
     }
