@@ -44,7 +44,7 @@ public class NotificationEventHandler {
 
     @Transactional(propagation = Propagation.NESTED)
     public void sendToUserAboutNewSongNotification(TempSong song, TempUser user) {
-        SongAddedNotification notification = new SongAddedNotification(user, song);
+        SongAddedNotification notification = SongAddedNotification.from(song, user);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
@@ -53,15 +53,16 @@ public class NotificationEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Async
     public void handleFriendRequestEvent(FriendRequestedEvent event) {
-        FriendRequestedNotification notification = new FriendRequestedNotification(event.getCurrentUserName(), event.getRequestedUserName());
+        FriendRequestedNotification notification = FriendRequestedNotification.of(event);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
+
     @TransactionalEventListener(classes = SharePlaylistRequestedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Async
     public void handleSharePlaylistRequestEvent(SharePlaylistRequestedEvent event) {
-        SharePlaylistRequestedNotification notification = new SharePlaylistRequestedNotification(event.getCurrentUserEmail(), event.getRequestedUserEmail());
+        SharePlaylistRequestedNotification notification = SharePlaylistRequestedNotification.from(event);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
