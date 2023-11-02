@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.auth.oauth.provider;
+package com.petitapetit.miml.domain.auth.oauth;
 
 import java.util.Arrays;
 

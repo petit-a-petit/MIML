@@ -9,9 +9,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.petitapetit.miml.domain.auth.oauth.exception.NotRegisteredProviderException;
-import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
-import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2UserInfo;
-import com.petitapetit.miml.domain.auth.oauth.provider.SpotifyUserInfo;
+import com.petitapetit.miml.domain.auth.oauth.userinfo.OAuth2UserInfo;
+import com.petitapetit.miml.domain.auth.oauth.userinfo.SpotifyUserInfo;
 import com.petitapetit.miml.domain.member.model.Member;
 import com.petitapetit.miml.domain.member.model.RoleType;
 import com.petitapetit.miml.domain.member.repository.MemberRepository;

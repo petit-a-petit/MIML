@@ -5,8 +5,7 @@ import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
-import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
-import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2UserInfo;
+import com.petitapetit.miml.domain.auth.oauth.userinfo.OAuth2UserInfo;
 import com.petitapetit.miml.domain.member.model.Member;
 
 import lombok.Getter;

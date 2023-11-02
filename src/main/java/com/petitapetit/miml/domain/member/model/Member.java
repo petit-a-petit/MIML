@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
+import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
 import com.petitapetit.miml.domain.friendship.model.Friendship;
 
 import lombok.AllArgsConstructor;
