@@ -10,5 +10,6 @@ import com.petitapetit.miml.domain.member.model.Member;
 
 @Repository
 public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
-	List<Friendship> findFriendshipsByFromMemberAndIsFriend(Member toMember, Boolean isFriend);
+	List<Friendship> findFriendshipsByFromMemberAndIsFriend(Member fromMember, Boolean isFriend);
+	List<Friendship> findFriendshipsByToMemberAndIsFriend(Member toMember, Boolean isFriend);
 }

@@ -35,12 +35,21 @@ public class FriendshipController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(null);
 	}
 
-	// 내가 친구 요청 보낸 친구 조회 기능
-	@GetMapping()
-	public ResponseEntity<List<FriendshipDto.toMemberResponse>> getToMemberList(
+	// 내가 친구 요청 보낸 회원 조회 기능
+	@GetMapping("/to-members")
+	public ResponseEntity<List<FriendshipDto.FetchResponse>> getToMemberList(
 		@AuthenticationPrincipal CustomOAuth2User oAuth2User
 	) {
-		List<FriendshipDto.toMemberResponse> toMemberResponseList = friendshipService.getToMemberList(oAuth2User);
-		return ResponseEntity.status(HttpStatus.OK).body(toMemberResponseList);
+		List<FriendshipDto.FetchResponse> fetchResponseList = friendshipService.getToMemberList(oAuth2User);
+		return ResponseEntity.status(HttpStatus.OK).body(fetchResponseList);
+	}
+
+	// 나에게 친구 요청 보낸 회원 조회 기능
+	@GetMapping("/from-members")
+	public ResponseEntity<List<FriendshipDto.FetchResponse>> getFromMemberList(
+		@AuthenticationPrincipal CustomOAuth2User oAuth2User
+	) {
+		List<FriendshipDto.FetchResponse> fetchResponseList = friendshipService.getFromMemberList(oAuth2User);
+		return ResponseEntity.status(HttpStatus.OK).body(fetchResponseList);
 	}
 }

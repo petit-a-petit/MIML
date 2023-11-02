@@ -22,9 +22,9 @@ public class FriendshipDto {
 	@NoArgsConstructor
 	@Getter
 	@Builder
-	public static class toMemberResponse {
-		private Long toMemberId; // 내가 친구 요청을 보낸 회원의 PK
-		private String toMemberName; // 내가 친구 요청을 보낸 회원의 이름
-		private LocalDateTime createdAt; // 친구 요청을 보낸 시각
+	public static class FetchResponse {
+		private Long toMemberId;
+		private String toMemberName;
+		private LocalDateTime createdAt;
 	}
 }
