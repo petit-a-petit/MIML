@@ -3,7 +3,6 @@ package com.petitapetit.miml.domain.notification;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +11,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
 @Import({AsyncTestConfig.class})
 public class NotificationTransactionIntegrationTest {
-
     @Autowired
     private TempSongRepository tempSongRepository;
     @Autowired
@@ -33,14 +33,6 @@ public class NotificationTransactionIntegrationTest {
     private MailService mailService;
     @Autowired
     private NotificationRepository notificationRepository;
-
-    @BeforeEach
-    public void setUp() {
-        notificationRepository.deleteAll();
-        tempSongRepository.deleteAll();
-        tempArtistRepository.deleteAll();
-        tempUserRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("음악 생성이 실패 시 이벤트가 발행되지 않아야 한다.")
