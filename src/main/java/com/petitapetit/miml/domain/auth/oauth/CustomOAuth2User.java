@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
+import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2Provider;
 import com.petitapetit.miml.domain.auth.oauth.provider.OAuth2UserInfo;
 import com.petitapetit.miml.domain.member.model.Member;
 
@@ -28,20 +29,20 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 	 */
 	public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, Member user, String accessToken) {
 		super(List.of(new SimpleGrantedAuthority(user.getRole().name())), oAuth2UserInfo.getAttributes(),
-			user.getId().getProvider().getAttributeKey());
+			user.getProvider().getAttributeKey());
 		this.user = user;
-		this.providerName = user.getId().getProvider().getProviderName();
+		this.providerName = user.getProvider().getProviderName();
 		this.accessToken = accessToken;
 	}
 
 	// 시큐리티 컨텍스트 내의 인증 정보를 가져와 하는 작업을 수행할 경우 계정 식별자가 사용되도록 조치
 	@Override
 	public String getName() {
-		return String.valueOf(user.getId());
+		return String.valueOf(user.getProviderId());
 	}
 
-	public String getProvider() {
-		return providerName;
+	public OAuth2Provider getProvider() {
+		return OAuth2Provider.getEnum(providerName);
 	}
 
 	public String getAccessToken() {

@@ -3,6 +3,7 @@ spring:
     include:
       - oauth
       - spotify
+      - tmp
   jpa:
     hibernate:
       generate-ddl: true
