@@ -9,6 +9,7 @@ import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
 import com.petitapetit.miml.domain.friendship.dto.FriendshipDto;
 import com.petitapetit.miml.domain.friendship.model.Friendship;
 import com.petitapetit.miml.domain.friendship.repository.FriendshipRepository;
+import com.petitapetit.miml.domain.member.dto.MemberDto;
 import com.petitapetit.miml.domain.member.exception.MemberNotFoundException;
 import com.petitapetit.miml.domain.member.model.Member;
 import com.petitapetit.miml.domain.member.repository.MemberRepository;
@@ -27,17 +28,16 @@ public class FriendshipService {
 	) {
 		// 친구 요청을 보낸 Member
 		Member fromMember = oAuth2User.getUser();
-
 		// 친구 요청을 받은 Member
 		Member toMember = memberRepository.findById(createRequest.getToMemberId())
 			.orElseThrow(() -> new MemberNotFoundException());
-
-		// 정방향 레코드와 역방향 레코드 추가
+		// 정방향 레코드 추가
 		friendshipRepository.save(Friendship.builder()
 			.toMember(toMember)
 			.fromMember(fromMember)
-			.isFriend(Boolean.FALSE)
+			.isFriend(Boolean.TRUE)
 			.build());
+		// 역방향 레코드 추가
 		friendshipRepository.save(Friendship.builder()
 			.toMember(fromMember)
 			.fromMember(toMember)
@@ -46,15 +46,15 @@ public class FriendshipService {
 	}
 
 	// 내가 친구 요청 보낸 회원 조회 기능 (fromMember: 나 -> toMember: 상대방)
-	public List<FriendshipDto.FetchResponse> getToMemberList(CustomOAuth2User oAuth2User) {
-		// fromMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회
-		List<Friendship> toMembers = friendshipRepository.findFriendshipsByFromMemberAndIsFriend(
+	public List<FriendshipDto.NotFriendResponse> getToMemberList(CustomOAuth2User oAuth2User) {
+		// toMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회
+		List<Friendship> toMembers = friendshipRepository.findFriendshipsByToMemberAndIsFriend(
 			oAuth2User.getUser(), Boolean.FALSE);
 
 		return toMembers.stream()
-			.map(friendship -> FriendshipDto.FetchResponse.builder()
-				.toMemberId(friendship.getToMember().getMemberId())
-				.toMemberName(friendship.getToMember().getName())
+			.map(friendship -> FriendshipDto.NotFriendResponse.builder()
+				.memberId(friendship.getFromMember().getMemberId())
+				.memberName(friendship.getFromMember().getName())
 				.createdAt(friendship.getCreatedAt())
 				.build()
 			)
@@ -62,18 +62,31 @@ public class FriendshipService {
 	}
 
 	// 나에게 친구 요청 보낸 회원 조회 기능 (fromMember: 상대방 -> toMember: 나)
-	public List<FriendshipDto.FetchResponse> getFromMemberList(CustomOAuth2User oAuth2User) {
-		// toMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회
-		List<Friendship> fromMembers = friendshipRepository.findFriendshipsByToMemberAndIsFriend(
+	public List<FriendshipDto.NotFriendResponse> getFromMemberList(CustomOAuth2User oAuth2User) {
+		// fromMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회
+		List<Friendship> fromMembers = friendshipRepository.findFriendshipsByFromMemberAndIsFriend(
 			oAuth2User.getUser(), Boolean.FALSE);
 
 		return fromMembers.stream()
-			.map(friendship -> FriendshipDto.FetchResponse.builder()
-				.toMemberId(friendship.getToMember().getMemberId())
-				.toMemberName(friendship.getToMember().getName())
+			.map(friendship -> FriendshipDto.NotFriendResponse.builder()
+				.memberId(friendship.getToMember().getMemberId())
+				.memberName(friendship.getToMember().getName())
 				.createdAt(friendship.getCreatedAt())
 				.build()
 			)
+			.collect(Collectors.toList());
+	}
+
+	// 나와 서로 친구인 회원 조회 기능
+	public List<MemberDto.BriefInfoResponse> getFriendList(CustomOAuth2User oAuth2User) {
+		List<Member> friends = friendshipRepository.findFriends(oAuth2User.getUser());
+		// List<Friendship> friends = friendshipRepository.findFriendships(oAuth2User.getUser());
+
+		return friends.stream()
+			.map(friend -> MemberDto.BriefInfoResponse.builder()
+				.memberId(friend.getMemberId())
+				.memberName(friend.getName())
+				.build())
 			.collect(Collectors.toList());
 	}
 }

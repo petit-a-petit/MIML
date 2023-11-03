@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
 import com.petitapetit.miml.domain.friendship.dto.FriendshipDto;
 import com.petitapetit.miml.domain.friendship.service.FriendshipService;
+import com.petitapetit.miml.domain.member.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,19 +38,28 @@ public class FriendshipController {
 
 	// 내가 친구 요청 보낸 회원 조회 기능
 	@GetMapping("/to-members")
-	public ResponseEntity<List<FriendshipDto.FetchResponse>> getToMemberList(
+	public ResponseEntity<List<FriendshipDto.NotFriendResponse>> getToMemberList(
 		@AuthenticationPrincipal CustomOAuth2User oAuth2User
 	) {
-		List<FriendshipDto.FetchResponse> fetchResponseList = friendshipService.getToMemberList(oAuth2User);
+		List<FriendshipDto.NotFriendResponse> fetchResponseList = friendshipService.getToMemberList(oAuth2User);
 		return ResponseEntity.status(HttpStatus.OK).body(fetchResponseList);
 	}
 
 	// 나에게 친구 요청 보낸 회원 조회 기능
 	@GetMapping("/from-members")
-	public ResponseEntity<List<FriendshipDto.FetchResponse>> getFromMemberList(
+	public ResponseEntity<List<FriendshipDto.NotFriendResponse>> getFromMemberList(
 		@AuthenticationPrincipal CustomOAuth2User oAuth2User
 	) {
-		List<FriendshipDto.FetchResponse> fetchResponseList = friendshipService.getFromMemberList(oAuth2User);
+		List<FriendshipDto.NotFriendResponse> fetchResponseList = friendshipService.getFromMemberList(oAuth2User);
 		return ResponseEntity.status(HttpStatus.OK).body(fetchResponseList);
+	}
+
+	// 나와 서로 친구인 회원 조회 기능
+	@GetMapping("/friends")
+	public ResponseEntity<List<MemberDto.BriefInfoResponse>> getFriendList(
+		@AuthenticationPrincipal CustomOAuth2User oAuth2User
+	) {
+		List<MemberDto.BriefInfoResponse> friendList = friendshipService.getFriendList(oAuth2User);
+		return ResponseEntity.status(HttpStatus.OK).body(friendList);
 	}
 }

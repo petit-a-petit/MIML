@@ -22,9 +22,19 @@ public class FriendshipDto {
 	@NoArgsConstructor
 	@Getter
 	@Builder
-	public static class FetchResponse {
-		private Long toMemberId;
-		private String toMemberName;
+	public static class NotFriendResponse {
+		private Long memberId; // 친구 요청을 했거나 받은 회원의 아이디
+		private String memberName;
+		private LocalDateTime createdAt;
+	}
+
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Getter
+	@Builder
+	public static class AlreadyFriendResponse {
+		private Long memberId; // 친구인 회원의 아이디
+		private String memberName;
 		private LocalDateTime createdAt;
 	}
 }
