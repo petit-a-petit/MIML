@@ -40,4 +40,8 @@ public class Friendship {
 	private Boolean isFriend; // 서로 친구인지 판단
 	@CreationTimestamp
 	private LocalDateTime createdAt;
+
+	public void acceptRequest() {
+		isFriend = Boolean.TRUE;
+	}
 }

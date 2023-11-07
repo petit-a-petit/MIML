@@ -36,6 +36,16 @@ public class FriendshipController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(null);
 	}
 
+	// 친구 신청 수락
+	@PostMapping("/manage")
+	public ResponseEntity<Void> acceptFriendship(
+		@RequestBody @Validated FriendshipDto.AcceptRequest acceptRequest,
+		@AuthenticationPrincipal CustomOAuth2User oAuth2User
+	) {
+		friendshipService.acceptFriendship(acceptRequest, oAuth2User);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+
 	// 내가 친구 요청 보낸 회원 조회 기능
 	@GetMapping("/to-members")
 	public ResponseEntity<List<FriendshipDto.NotFriendResponse>> getToMemberList(

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
 import com.petitapetit.miml.domain.friendship.dto.FriendshipDto;
+import com.petitapetit.miml.domain.friendship.exception.FriendshipNotFoundException;
 import com.petitapetit.miml.domain.friendship.model.Friendship;
 import com.petitapetit.miml.domain.friendship.repository.FriendshipRepository;
 import com.petitapetit.miml.domain.member.dto.MemberDto;
@@ -45,9 +46,25 @@ public class FriendshipService {
 			.build());
 	}
 
+	// 친구 요청 수락
+	public void acceptFriendship(
+		FriendshipDto.AcceptRequest acceptRequest,
+		CustomOAuth2User oAuth2User
+	) {
+		// 나에게 친구를 요청한 사용자
+		Member fromMember = memberRepository.findById(acceptRequest.getFromMemberId())
+			.orElseThrow(() -> new MemberNotFoundException());
+		// 역방향 레코드로 해당 Friendship 조회 (fromMember 가 로그인한 사용자)
+		Friendship friendship = friendshipRepository.findByFromMemberAndToMemberAndIsFriend(
+				oAuth2User.getUser(), fromMember, Boolean.FALSE)
+			.orElseThrow(() -> new FriendshipNotFoundException());
+		// 친구 관계 갱신
+		friendship.acceptRequest();
+	}
+
 	// 내가 친구 요청 보낸 회원 조회 기능 (fromMember: 나 -> toMember: 상대방)
 	public List<FriendshipDto.NotFriendResponse> getToMemberList(CustomOAuth2User oAuth2User) {
-		// toMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회
+		// toMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회 (역방향 레코드로 조회)
 		List<Friendship> toMembers = friendshipRepository.findFriendshipsByToMemberAndIsFriend(
 			oAuth2User.getUser(), Boolean.FALSE);
 
@@ -63,7 +80,7 @@ public class FriendshipService {
 
 	// 나에게 친구 요청 보낸 회원 조회 기능 (fromMember: 상대방 -> toMember: 나)
 	public List<FriendshipDto.NotFriendResponse> getFromMemberList(CustomOAuth2User oAuth2User) {
-		// fromMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회
+		// fromMember 가 로그인한 사용자이면서 아직 친구가 아닌 Friendship 조회 (역방향 레코드로 조회)
 		List<Friendship> fromMembers = friendshipRepository.findFriendshipsByFromMemberAndIsFriend(
 			oAuth2User.getUser(), Boolean.FALSE);
 

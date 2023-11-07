@@ -1,6 +1,7 @@
 package com.petitapetit.miml.domain.friendship.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,5 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 			"AND sf.isFriend = true"
 	)
 	List<Member> findFriends(Member loginMember);
+	Optional<Friendship> findByFromMemberAndToMemberAndIsFriend(Member fromMember, Member toMember, Boolean isFriend);
 }

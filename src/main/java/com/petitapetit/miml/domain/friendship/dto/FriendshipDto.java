@@ -15,7 +15,15 @@ public class FriendshipDto {
 	@Getter
 	public static class CreateRequest {
 		@NotNull
-		private Long toMemberId; // 친구 요청을 보낼 회원의 아이디
+		private Long toMemberId; // 내가 친구 요청을 보낼 회원의 아이디
+	}
+
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Getter
+	public static class AcceptRequest {
+		@NotNull
+		private Long fromMemberId; // 나에게 친구 요청을 보낸 회원의 아이디
 	}
 
 	@AllArgsConstructor
