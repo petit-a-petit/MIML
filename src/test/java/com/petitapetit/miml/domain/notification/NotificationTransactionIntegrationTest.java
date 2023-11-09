@@ -3,7 +3,6 @@ package com.petitapetit.miml.domain.notification;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +10,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
+@Import({AsyncTestConfig.class})
 public class NotificationTransactionIntegrationTest {
-
     @Autowired
     private TempSongRepository tempSongRepository;
     @Autowired
@@ -32,15 +34,6 @@ public class NotificationTransactionIntegrationTest {
     @Autowired
     private NotificationRepository notificationRepository;
 
-
-    @BeforeEach
-    public void setUp() {
-        notificationRepository.deleteAll();
-        tempSongRepository.deleteAll();
-        tempArtistRepository.deleteAll();
-        tempUserRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("음악 생성이 실패 시 이벤트가 발행되지 않아야 한다.")
     public void testNoEventOnSongCreationFailure() {
@@ -50,7 +43,7 @@ public class NotificationTransactionIntegrationTest {
 
         // when: addNewSong 메소드 호출하지만 내부 예외 발생
         assertThrows(IllegalArgumentException.class,
-            () -> tempSongService.addNewSong(artistName, songName));
+                () -> tempSongService.addNewSong(artistName, songName));
 
         // then: 저장된 곡과 알림이 없음을 확인
         List<TempSong> songs = tempSongRepository.findAll();
@@ -81,7 +74,7 @@ public class NotificationTransactionIntegrationTest {
         List<TempSong> songs = tempSongRepository.findByArtistName(artistName);
         List<Notification> notifications = notificationRepository.findAll();
         assertTrue(
-            songs.stream().anyMatch(song -> song.getName().equals(songName)));
+                songs.stream().anyMatch(song -> song.getName().equals(songName)));
         assertTrue(notifications.isEmpty());
     }
 
@@ -102,9 +95,9 @@ public class NotificationTransactionIntegrationTest {
         tempSongService.addNewSong(artistName, songName);
 
         // then: 신곡 추가 이벤트가 발생했음을 확인
-        List<TempSong> users = tempSongRepository.findAll();
+        List<TempSong> songs = tempSongRepository.findAll();
         List<Notification> notifications = notificationRepository.findAll();
-        assertFalse(users.isEmpty());
+        assertFalse(songs.isEmpty());
         assertFalse(notifications.isEmpty());
     }
 }

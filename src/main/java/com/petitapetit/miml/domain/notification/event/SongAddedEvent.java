@@ -1,15 +1,13 @@
 package com.petitapetit.miml.domain.notification.event;
 
 import com.petitapetit.miml.domain.notification.TempSong;
-import org.springframework.context.ApplicationEvent;
 
 // 신곡이 추가될 때 발행(publish) 될 event
-public class SongAddedEvent extends ApplicationEvent {
+public class SongAddedEvent {
     // 임시 곡
-    private TempSong song;
+    private final TempSong song;
 
-    public SongAddedEvent(Object source, TempSong song) {
-        super(source);
+    public SongAddedEvent(TempSong song) {
         this.song = song;
     }
 

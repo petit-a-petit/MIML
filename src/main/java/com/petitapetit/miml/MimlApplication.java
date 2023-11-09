@@ -12,6 +12,5 @@ public class MimlApplication {
     public static void main(String[] args) {
         SpringApplication.run(MimlApplication.class, args);
     }
-
 }
 

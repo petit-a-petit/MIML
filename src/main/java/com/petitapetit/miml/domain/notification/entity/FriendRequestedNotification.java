@@ -1,6 +1,6 @@
 package com.petitapetit.miml.domain.notification.entity;
 
-import com.petitapetit.miml.domain.notification.TempUser;
+import com.petitapetit.miml.domain.notification.event.FriendRequestedEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +12,11 @@ import javax.persistence.Entity;
 public class FriendRequestedNotification extends Notification {
     private String requestedUserName;  // 친구 요청 받은 유저 이름
 
-    public FriendRequestedNotification(String currentUserEmail, String requestedUserEmail){
+    public static FriendRequestedNotification of(FriendRequestedEvent event) {
+        return new FriendRequestedNotification(event.getCurrentUserName(), event.getRequestedUserName());
+    }
+
+    private FriendRequestedNotification(String currentUserEmail, String requestedUserEmail){
         super(currentUserEmail);
         this.requestedUserName = requestedUserEmail;
     }

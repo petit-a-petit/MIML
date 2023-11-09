@@ -14,7 +14,11 @@ public class SongAddedNotification extends Notification {
     private String songName;
     private String songArtist;
 
-    public SongAddedNotification(TempUser user, TempSong song){
+    public static SongAddedNotification from(TempSong song, TempUser user){
+        return new SongAddedNotification(user, song);
+    }
+
+    private SongAddedNotification(TempUser user, TempSong song){
         super(user.getEmail());
         this.songArtist = song.getArtist().getName();
         this.songName = song.getName();

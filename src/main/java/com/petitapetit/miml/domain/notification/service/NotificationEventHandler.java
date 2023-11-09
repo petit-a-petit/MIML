@@ -11,6 +11,7 @@ import com.petitapetit.miml.domain.notification.event.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-//@Async("asyncExecutor") // 비동기로 처리!
 public class NotificationEventHandler {
 
     private final TempUserRepository userRepository;
@@ -31,9 +31,8 @@ public class NotificationEventHandler {
 
     @TransactionalEventListener(classes = SongAddedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
     public void handleSongEvent(SongAddedEvent event) {
-        log.info("이벤트 감지 : {}",event);
-        log.info("현재 스레드 정보 : {}", Thread.currentThread());
         TempSong song = event.getSong();
 
         Set<TempUser> users = userRepository.findByLikeArtistsSetContaining(song.getArtist());
@@ -45,28 +44,25 @@ public class NotificationEventHandler {
 
     @Transactional(propagation = Propagation.NESTED)
     public void sendToUserAboutNewSongNotification(TempSong song, TempUser user) {
-        SongAddedNotification notification = new SongAddedNotification(user, song);
+        SongAddedNotification notification = SongAddedNotification.from(song, user);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
 
     @TransactionalEventListener(classes = FriendRequestedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
     public void handleFriendRequestEvent(FriendRequestedEvent event) {
-        log.debug("이벤트 감지 : {}",event);
-        log.debug("현재 스레드 정보 : {}", Thread.currentThread());
-
-        FriendRequestedNotification notification = new FriendRequestedNotification(event.getCurrentUserName(), event.getRequestedUserName());
+        FriendRequestedNotification notification = FriendRequestedNotification.of(event);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
+
     @TransactionalEventListener(classes = SharePlaylistRequestedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
     public void handleSharePlaylistRequestEvent(SharePlaylistRequestedEvent event) {
-        log.debug("이벤트 감지 : {}",event);
-        log.debug("현재 스레드 정보 : {}", Thread.currentThread());
-
-        SharePlaylistRequestedNotification notification = new SharePlaylistRequestedNotification(event.getCurrentUserEmail(), event.getRequestedUserEmail());
+        SharePlaylistRequestedNotification notification = SharePlaylistRequestedNotification.from(event);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }

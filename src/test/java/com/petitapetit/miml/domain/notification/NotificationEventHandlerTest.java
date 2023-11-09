@@ -38,8 +38,8 @@ public class NotificationEventHandlerTest extends ServiceTest {
     public void testHandleSongEvent() {
         // given
         TempArtist artist = new TempArtist("artist");
-        TempSong song = new TempSong("newSong",artist);
-        SongAddedEvent event = new SongAddedEvent(this,song);
+        TempSong song = new TempSong("newSong", artist);
+        SongAddedEvent event = new SongAddedEvent(song);
         Set<TempUser> users = new HashSet<>();
         users.add(new TempUser());
 
@@ -61,7 +61,7 @@ public class NotificationEventHandlerTest extends ServiceTest {
         Set<TempUser> noUsers = Collections.emptySet();
 
         TempSong songByNoLikedArtists = new TempSong("song", artist);
-        SongAddedEvent event = new SongAddedEvent(this, songByNoLikedArtists);
+        SongAddedEvent event = new SongAddedEvent(songByNoLikedArtists);
 
         when(userRepository.findByLikeArtistsSetContaining(artist)).thenReturn(noUsers);
 
@@ -79,7 +79,7 @@ public class NotificationEventHandlerTest extends ServiceTest {
         // given
         TempUser user1 = new TempUser();
         TempUser user2 = new TempUser();
-        FriendRequestedEvent event = new FriendRequestedEvent(this, user1, user2);
+        FriendRequestedEvent event = new FriendRequestedEvent(user1, user2);
 
         // when
         notificationEventHandler.handleFriendRequestEvent(event);
@@ -95,7 +95,7 @@ public class NotificationEventHandlerTest extends ServiceTest {
         // given
         TempUser user1 = new TempUser();
         TempUser user2 = new TempUser();
-        SharePlaylistRequestedEvent event = new SharePlaylistRequestedEvent(this, user1, user2);
+        SharePlaylistRequestedEvent event = new SharePlaylistRequestedEvent(user1, user2);
 
         // when
         notificationEventHandler.handleSharePlaylistRequestEvent(event);
