@@ -20,7 +20,6 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 			"ON f.toMember.memberId = sf.fromMember.memberId " +
 			"WHERE f.fromMember = :loginMember " +
 			"AND f.fromMember = sf.toMember " +
-			"AND f.toMember = sf.fromMember " +
 			"AND f.isFriend = true " +
 			"AND sf.isFriend = true"
 	)
