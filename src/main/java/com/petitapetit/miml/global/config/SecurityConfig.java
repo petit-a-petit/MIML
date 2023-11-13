@@ -8,10 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
 
-import com.petitapetit.miml.domain.auth.oauth.CustomOauth2UserService;
+import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2UserService;
 import com.petitapetit.miml.domain.auth.oauth.filter.OriginalUriFilter;
 import com.petitapetit.miml.domain.auth.oauth.handler.CustomOAuth2AuthenticationSuccessHandler;
 import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationFailureHandler;
@@ -23,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class SecurityConfig {
 
-	private final CustomOauth2UserService customOauth2UserService;
+	private final CustomOAuth2UserService customOauth2UserService;
 	private final CustomOAuth2AuthenticationSuccessHandler customHandler;
 	private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 	@Bean
