@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2UserService;
 import com.petitapetit.miml.domain.auth.oauth.filter.OriginalUriFilter;
-import com.petitapetit.miml.domain.auth.oauth.handler.CustomOAuth2AuthenticationSuccessHandler;
+import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationFailureHandler;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final CustomOAuth2UserService customOauth2UserService;
-	private final CustomOAuth2AuthenticationSuccessHandler customHandler;
+	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 	private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
@@ -46,7 +46,7 @@ public class SecurityConfig {
 				.userInfoEndpoint(userInfoEndpoint ->
 					userInfoEndpoint.userService(customOauth2UserService)
 				)
-				.successHandler(customHandler)
+				.successHandler(oAuth2AuthenticationSuccessHandler)
 				.failureHandler(oAuth2AuthenticationFailureHandler)
 			)
 			.addFilterBefore(new OriginalUriFilter(), BasicAuthenticationFilter.class);

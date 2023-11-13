@@ -18,7 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.petitapetit.miml.global.util.SessionUtil;
 
 @Component
-public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	@Value("${callback-url-scheme}")
 	private String callbackUrlScheme;
