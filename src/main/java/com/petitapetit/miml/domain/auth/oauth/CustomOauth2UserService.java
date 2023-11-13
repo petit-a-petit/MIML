@@ -44,16 +44,11 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 	}
 
 	private Member getOrCreateMember(OAuth2UserInfo oAuth2UserInfo) {
-		Member existingMember = getExistingMember(oAuth2UserInfo);
-		return existingMember != null ? existingMember : createMember(oAuth2UserInfo);
-	}
-
-	private Member getExistingMember(OAuth2UserInfo oAuth2UserInfo) {
 		Optional<Member> oMember = memberRepository.findByProviderAndProviderId(
 			oAuth2UserInfo.getProvider(),
 			oAuth2UserInfo.getProviderId()
 		);
-		return oMember.orElse(null); // 회원이 없으면 null 반환
+		return oMember.orElseGet(() -> createMember(oAuth2UserInfo)); // 회원이 없으면 생성
 	}
 
 	private Member createMember(OAuth2UserInfo oAuth2UserInfo) {
