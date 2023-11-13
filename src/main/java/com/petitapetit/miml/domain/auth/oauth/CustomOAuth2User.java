@@ -18,7 +18,6 @@ import lombok.Getter;
 public class CustomOAuth2User extends DefaultOAuth2User {
 
 	private Member user;
-	private String providerName; // spotify, kakao, naver
 	private String accessToken; // spotify에서 내려준 access token
 
 	/**
@@ -30,7 +29,6 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 		super(List.of(new SimpleGrantedAuthority(user.getRole().name())), oAuth2UserInfo.getAttributes(),
 			user.getProvider().getAttributeKey());
 		this.user = user;
-		this.providerName = user.getProvider().getProviderName();
 		this.accessToken = accessToken;
 	}
 
@@ -38,10 +36,6 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 	@Override
 	public String getName() {
 		return String.valueOf(user.getProviderId());
-	}
-
-	public OAuth2Provider getProvider() {
-		return OAuth2Provider.getEnum(providerName);
 	}
 
 	public String getAccessToken() {
