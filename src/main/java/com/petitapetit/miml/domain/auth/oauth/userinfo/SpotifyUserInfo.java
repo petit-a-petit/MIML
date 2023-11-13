@@ -1,6 +1,8 @@
-package com.petitapetit.miml.domain.auth.oauth.provider;
+package com.petitapetit.miml.domain.auth.oauth.userinfo;
 
 import java.util.Map;
+
+import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
 
 public class SpotifyUserInfo extends OAuth2UserInfo {
 

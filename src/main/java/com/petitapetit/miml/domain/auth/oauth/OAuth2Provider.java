@@ -1,4 +1,8 @@
-package com.petitapetit.miml.domain.auth.oauth.provider;
+package com.petitapetit.miml.domain.auth.oauth;
+
+import java.util.Arrays;
+
+import com.petitapetit.miml.domain.auth.oauth.exception.NotRegisteredProviderException;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,4 +18,5 @@ public enum OAuth2Provider {
 
 	private final String providerName;
 	private final String attributeKey;
+
 }
