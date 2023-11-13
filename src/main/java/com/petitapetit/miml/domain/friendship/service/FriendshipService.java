@@ -1,5 +1,6 @@
 package com.petitapetit.miml.domain.friendship.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,18 +33,19 @@ public class FriendshipService {
 		// 친구 요청을 받은 Member
 		Member toMember = memberRepository.findById(createRequest.getToMemberId())
 			.orElseThrow(() -> new MemberNotFoundException());
-		// 정방향 레코드 추가
-		friendshipRepository.save(Friendship.builder()
+		// 정방향 레코드
+		Friendship friendship = Friendship.builder()
 			.toMember(toMember)
 			.fromMember(fromMember)
 			.isFriend(Boolean.TRUE)
-			.build());
-		// 역방향 레코드 추가
-		friendshipRepository.save(Friendship.builder()
+			.build();
+		// 역방향 레코드
+		Friendship reversedFriendship = Friendship.builder()
 			.toMember(fromMember)
 			.fromMember(toMember)
 			.isFriend(Boolean.FALSE)
-			.build());
+			.build();
+		friendshipRepository.saveAll(Arrays.asList(friendship, reversedFriendship));
 	}
 
 	// 친구 요청 수락
@@ -97,7 +99,6 @@ public class FriendshipService {
 	// 나와 서로 친구인 회원 조회 기능
 	public List<MemberDto.BriefInfoResponse> getFriendList(CustomOAuth2User oAuth2User) {
 		List<Member> friends = friendshipRepository.findFriends(oAuth2User.getUser());
-		// List<Friendship> friends = friendshipRepository.findFriendships(oAuth2User.getUser());
 
 		return friends.stream()
 			.map(friend -> MemberDto.BriefInfoResponse.builder()
