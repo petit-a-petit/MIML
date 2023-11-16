@@ -29,17 +29,11 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-
 		if (request.getHeader(HttpHeaders.AUTHORIZATION) != null) {
 			String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-			Map<String, Object> attribute = Map.of(
-				"id", "spotify",
-				"accessToken", accessToken
-			);
-
 			SecurityContextHolder.getContext().setAuthentication(
 				new OAuth2AuthenticationToken(
-					new CustomOAuth2User(new SpotifyUserInfo(attribute), createMember(), accessToken),
+					new CustomOAuth2User(createSpotifyUserInfo(accessToken), createMember(), accessToken),
 					Collections.emptySet(),
 					"id"
 				)
@@ -58,5 +52,13 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
 			.provider(OAuth2Provider.SPOTIFY)
 			.providerId("provider_id")
 			.build();
+	}
+
+	private SpotifyUserInfo createSpotifyUserInfo(String accessToken) {
+		Map<String, Object> attribute = Map.of(
+			"id", "spotify",
+			"accessToken", accessToken
+		);
+		return new SpotifyUserInfo(attribute);
 	}
 }
