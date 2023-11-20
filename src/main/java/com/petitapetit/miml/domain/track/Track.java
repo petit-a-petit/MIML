@@ -26,7 +26,6 @@ public class Track {
     @OneToMany(mappedBy = "track")
     private List<ArtistTrack> artistTracks = new ArrayList<>();
 
-    // getters, setters, equals, hashCode 생략
     public Track(TrackDto trackDto) {
         this.rank = trackDto.getRank();
         this.uri = trackDto.getUri();

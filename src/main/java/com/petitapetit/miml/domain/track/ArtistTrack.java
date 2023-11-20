@@ -30,5 +30,4 @@ public class ArtistTrack {
         this.artist = artist;
     }
 
-    // getters, setters, equals, hashCode 생략
 }

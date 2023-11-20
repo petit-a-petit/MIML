@@ -3,10 +3,8 @@ package com.petitapetit.miml.domain.track;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrackDto {
@@ -19,8 +17,5 @@ public class TrackDto {
     private String previousRank;
     private String weeksOnChart;
     private String streams;
-
-
-    // getters, setters 생략
 }
 
