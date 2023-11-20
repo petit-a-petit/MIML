@@ -6,11 +6,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2UserService;
 import com.petitapetit.miml.domain.auth.oauth.filter.OriginalUriFilter;
+import com.petitapetit.miml.domain.auth.oauth.filter.SimpleAuthFilter;
 import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationFailureHandler;
 
@@ -49,7 +51,8 @@ public class SecurityConfig {
 				.successHandler(oAuth2AuthenticationSuccessHandler)
 				.failureHandler(oAuth2AuthenticationFailureHandler)
 			)
-			.addFilterBefore(new OriginalUriFilter(), BasicAuthenticationFilter.class);
+			.addFilterBefore(new OriginalUriFilter(), BasicAuthenticationFilter.class)
+			.addFilterBefore(new SimpleAuthFilter(), OAuth2LoginAuthenticationFilter.class);
 
 		return http.build();
 	}
