@@ -1,11 +1,15 @@
 package com.petitapetit.miml.domain.member.model;
 
+import com.petitapetit.miml.domain.artist.MemberArtist;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
@@ -34,4 +38,11 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private OAuth2Provider provider;
 	private String providerId;
+	@OneToMany(mappedBy = "member")
+	private Set<MemberArtist> likedArtists = new HashSet<>();
+
+	public void likeArtist(MemberArtist memberArtist) {
+		likedArtists.add(memberArtist);
+		memberArtist.setMember(this);
+	}
 }
