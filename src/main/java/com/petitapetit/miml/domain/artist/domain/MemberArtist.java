@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.artist;
+package com.petitapetit.miml.domain.artist.domain;
 
 import com.petitapetit.miml.domain.member.model.Member;
 import javax.persistence.Entity;
@@ -40,4 +40,7 @@ public class MemberArtist {
         this.artist = artist;
     }
 
+    public Artist getArtist() {
+        return this.artist;
+    }
 }

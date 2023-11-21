@@ -1,6 +1,6 @@
 package com.petitapetit.miml.domain.member.model;
 
-import com.petitapetit.miml.domain.artist.MemberArtist;
+import com.petitapetit.miml.domain.artist.domain.MemberArtist;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;

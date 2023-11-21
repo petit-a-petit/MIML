@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.artist;
+package com.petitapetit.miml.domain.artist.domain;
 
 import com.petitapetit.miml.domain.track.ArtistTrack;
 import java.util.ArrayList;
@@ -12,8 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

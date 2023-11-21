@@ -1,6 +1,7 @@
 package com.petitapetit.miml.domain.track;
 
-import com.petitapetit.miml.domain.artist.Artist;
+import com.petitapetit.miml.domain.artist.domain.Artist;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
