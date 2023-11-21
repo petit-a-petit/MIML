@@ -38,4 +38,6 @@ out/
 
 .env
 .DS_Store
-application-oauth.yml
+
+data.sql
+application-tmp.yml

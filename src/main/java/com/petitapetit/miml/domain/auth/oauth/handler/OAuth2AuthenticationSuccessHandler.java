@@ -15,11 +15,10 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
 import com.petitapetit.miml.global.util.SessionUtil;
 
 @Component
-public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	@Value("${callback-url-scheme}")
 	private String callbackUrlScheme;
@@ -32,10 +31,10 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
 	) throws IOException, ServletException {
 
 		OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-		CustomOAuth2User oauthUser = (CustomOAuth2User) oauthToken.getPrincipal();
-		String accessToken = oauthUser.getAccessToken();
+		// CustomOAuth2User oauthUser = (CustomOAuth2User) oauthToken.getPrincipal();
+		// String accessToken = oauthUser.getAccessToken();
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		SecurityContextHolder.getContext().setAuthentication(oauthToken);
 		String originalRequestUri = SessionUtil.getOriginalRequestUri(request.getSession());
 
 		String targetUrl = createTargetUrl(originalRequestUri);
