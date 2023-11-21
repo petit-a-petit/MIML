@@ -39,6 +39,9 @@ spring:
             trust: smtp.naver.com
           starttls:
             enable: true
+  batch:
+    jdbc:
+      initialize-schema: always
 logging.level:
   org.hibernate.SQL: debug
   org.springframework.security: debug

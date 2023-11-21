@@ -45,6 +45,9 @@ dependencies {
     // java mail sender
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.13'
 
+    // batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch:2.7.16'
+
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
 }
