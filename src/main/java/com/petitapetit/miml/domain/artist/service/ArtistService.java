@@ -46,5 +46,14 @@ public class ArtistService {
                         userArtist.getArtist().getName()
                 )).collect(Collectors.toList());
     }
+
+    @Transactional
+    public void cancelLikeArtist(Long userId, Long artistId) {
+        MemberArtist userArtist = memberArtistRepository.findByMember_MemberIdAndArtist_Id(userId, artistId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 또는 아티스트를 찾을 수 없습니다."));
+
+        userArtist.cancelLike();
+        memberArtistRepository.delete(userArtist);
+    }
 }
 
