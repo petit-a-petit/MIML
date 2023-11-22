@@ -9,6 +9,7 @@ import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNot
 import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
 import com.petitapetit.miml.domain.notification.event.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -29,10 +30,8 @@ public class NotificationEventHandler {
     private final NotificationRepository notificationRepository;
     private final MailService mailService;
 
-    @TransactionalEventListener(classes = SongAddedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Async
-    public void handleSongEvent(SongAddedEvent event) {
+    public CompletableFuture<Void> handleSongEvent(SongAddedEvent event) {
         TempSong song = event.getSong();
 
         Set<TempUser> users = userRepository.findByLikeArtistsSetContaining(song.getArtist());
@@ -40,6 +39,7 @@ public class NotificationEventHandler {
         for (TempUser user : users) {
             sendToUserAboutNewSongNotification(song, user);
         }
+        return null;
     }
 
     @Transactional(propagation = Propagation.NESTED)
