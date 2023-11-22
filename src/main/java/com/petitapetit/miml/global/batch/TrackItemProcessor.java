@@ -1,7 +1,7 @@
 package com.petitapetit.miml.global.batch;
 
-import com.petitapetit.miml.domain.artist.Artist;
-import com.petitapetit.miml.domain.artist.ArtistRepository;
+import com.petitapetit.miml.domain.artist.domain.Artist;
+import com.petitapetit.miml.domain.artist.domain.ArtistRepository;
 import com.petitapetit.miml.domain.track.ArtistTrack;
 import com.petitapetit.miml.domain.track.ArtistTrackRepository;
 import com.petitapetit.miml.domain.track.Track;
@@ -21,7 +21,7 @@ public class TrackItemProcessor implements ItemProcessor<TrackDto, Track> {
     private final ArtistTrackRepository artistTrackRepository;
 
     @Override
-    public Track process(final TrackDto trackDto) throws Exception {
+    public Track process(final TrackDto trackDto) {
         List<ArtistTrack> artistTracks = Arrays.stream(trackDto.getArtistNames().split(","))
                 .map(String::trim)
                 .map(name -> artistRepository.findByName(name).orElseGet(() -> artistRepository.save(new Artist(name))))
