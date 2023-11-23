@@ -12,7 +12,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -34,10 +33,18 @@ public class BatchConfig {
                 .resource(new ClassPathResource("static/regional-kr-weekly-2023-11-09.csv"))
                 .linesToSkip(1)
                 .delimited()
-                .names(new String[]{"rank", "uri", "artist_names", "track_name", "source","peak_rank","previous_rank","weeks_on_chart","streams"})
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<TrackDto>() {{
-                    setTargetType(TrackDto.class);
-                }})
+                .names("rank", "uri", "artist_names", "track_name", "source","peak_rank","previous_rank","weeks_on_chart","streams")
+                .fieldSetMapper(fieldSet -> new TrackDto(
+                        fieldSet.readInt("rank"),
+                        fieldSet.readString("uri"),
+                        fieldSet.readString("artist_names"),
+                        fieldSet.readString("track_name"),
+                        fieldSet.readString("source"),
+                        fieldSet.readString("peak_rank"),
+                        fieldSet.readString("previous_rank"),
+                        fieldSet.readString("weeks_on_chart"),
+                        fieldSet.readString("streams")
+                ))
                 .build();
     }
 
