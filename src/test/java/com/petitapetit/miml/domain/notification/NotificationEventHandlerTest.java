@@ -1,8 +1,10 @@
 package com.petitapetit.miml.domain.notification;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
+import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.member.model.Member;
+import com.petitapetit.miml.domain.member.model.RoleType;
 import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.Notification;
@@ -29,7 +31,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
-public class NotificationEventHandlerTest extends ServiceTest {
+class NotificationEventHandlerTest extends ServiceTest {
 
     @InjectMocks
     private NotificationEventHandler notificationEventHandler;
@@ -42,7 +44,7 @@ public class NotificationEventHandlerTest extends ServiceTest {
 
     @Test
     @DisplayName("신곡이 추가되었을 때, 해당 노래의 아티스트를 좋아요 한 사용자에게 알림이 간다.")
-    public void testHandleSongEvent() {
+    void testHandleSongEvent() {
         // given
         TrackDto dto = new TrackDto(1,"spotify:url","artist","trackName","JYP","2","1","1","100");
         Track track = new Track(dto);
@@ -62,7 +64,7 @@ public class NotificationEventHandlerTest extends ServiceTest {
 
     @Test
     @DisplayName("신곡 추가 시 좋아요 한 사용자가 없으면 메일과 알림은 발송/저장 되지 않는다.")
-    public void testHandleSongEvent_NoLikedUsers() {
+    void testHandleSongEvent_NoLikedUsers() {
         // given
         List<Artist> artist = new ArrayList<>(List.of(new Artist("artist")));
         Set<Member> noUsers = Collections.emptySet();
@@ -85,8 +87,20 @@ public class NotificationEventHandlerTest extends ServiceTest {
     @DisplayName("친구 추가 이벤트 발생 시 mail이 보내지고 알림 내용이 저장된다.")
     void testHandleFriendRequestEvent() {
         // given
-        TempUser user1 = new TempUser();
-        TempUser user2 = new TempUser();
+        Member user1 = Member.builder()
+                .name("Test User")
+                .email("test@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test")
+                .build();
+        Member user2 = Member.builder()
+                .name("Test User")
+                .email("test@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test")
+                .build();
         FriendRequestedEvent event = new FriendRequestedEvent(user1, user2);
 
         // when
@@ -101,8 +115,20 @@ public class NotificationEventHandlerTest extends ServiceTest {
     @DisplayName("플레이리스트 공유 이벤트 발생 시 mail이 보내지고 알림 내용이 저장된다.")
     void testHandleSharePlaylistRequestEvent() {
         // given
-        TempUser user1 = new TempUser();
-        TempUser user2 = new TempUser();
+        Member user1 = Member.builder()
+                .name("Test User1")
+                .email("test1@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test1")
+                .build();
+        Member user2 = Member.builder()
+                .name("Test User2")
+                .email("test1@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test2")
+                .build();
         SharePlaylistRequestedEvent event = new SharePlaylistRequestedEvent(user1, user2);
 
         // when
