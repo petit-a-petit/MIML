@@ -1,11 +1,14 @@
 package com.petitapetit.miml.domain.track.service;
 
+import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.notification.event.TrackAddedEvent;
+import com.petitapetit.miml.domain.track.repository.ArtistTrackRepository;
 import com.petitapetit.miml.domain.track.repository.TrackRepository;
 import com.petitapetit.miml.domain.track.dto.TrackDto;
 import com.petitapetit.miml.domain.track.entity.ArtistTrack;
 import com.petitapetit.miml.domain.track.entity.Track;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TrackService {
     private final TrackRepository trackRepository;
+    private final ArtistTrackRepository artistTrackRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -45,5 +49,12 @@ public class TrackService {
         if (trackDto.getArtistNames() == null) {
             throw new IllegalArgumentException();
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Artist> getArtistsByTrack(Track track) {
+        List<ArtistTrack> artistTrack = artistTrackRepository.findAllByTrack(track);
+        List<Artist> artists = artistTrack.stream().map(ArtistTrack::getArtist).collect(Collectors.toList());
+        return artists;
     }
 }

@@ -2,7 +2,7 @@ package com.petitapetit.miml.domain.notification;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.artist.domain.ArtistRepository;
-import com.petitapetit.miml.domain.artist.domain.MemberArtistRepository;
+import com.petitapetit.miml.domain.artist.service.ArtistService;
 import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.member.model.Member;
@@ -17,9 +17,7 @@ import com.petitapetit.miml.domain.track.entity.Track;
 import com.petitapetit.miml.domain.track.dto.TrackDto;
 import com.petitapetit.miml.domain.track.repository.TrackRepository;
 import com.petitapetit.miml.domain.track.service.TrackService;
-import java.util.ArrayList;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +27,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,11 +49,12 @@ public class NotificationTransactionIntegrationTest {
     private ArtistTrackRepository artistTrackRepository;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private ArtistService artistService;
     @MockBean
     private MailService mailService;
     @Autowired
     private NotificationRepository notificationRepository;
-
     @Test
     public void testFindByLikedArtists() {
         // 멤버 생성
@@ -76,15 +77,18 @@ public class NotificationTransactionIntegrationTest {
 
         ArtistTrack artistTrack = new ArtistTrack(artist);
         artistTrack.setTrack(track);
-        artistTrack = artistTrackRepository.save(artistTrack);
+        artistTrackRepository.save(artistTrack);
+
+        memberService.likeArtist(member,artist.getId());
 
         // 트랙의 아티스트를 좋아하는 멤버 찾기
-        List<Artist> trackArtists = new ArrayList<>(track.getArtists());
-        Set<Member> likedMembers = memberRepository.findByLikedArtistNames(trackArtists.stream().map(Artist::getName).collect(
-                Collectors.toList()));
+        List<Artist> trackArtists = trackService.getArtistsByTrack(track);
+        Set<Member> likedMembers = artistService.findMembersByLikedArtistNames(trackArtists);
 
         // 검증
-        assertTrue(likedMembers.contains(member));
+        boolean containsMember = likedMembers.stream()
+                .anyMatch(m -> m.getMemberId().equals(member.getMemberId()));
+        assertTrue(containsMember);
     }
     @Nested
     class TrackAddedEventHandlerTest {
@@ -99,7 +103,7 @@ public class NotificationTransactionIntegrationTest {
                     () -> trackService.addNewSong(dto,null));
 
             // then: 저장된 곡과 알림이 없음을 확인
-            List<Track> songs = trackRepository.findAll();
+            List<Track> songs = trackRepository.findByName("trackName");
             List<Notification> notifications = notificationRepository.findAll();
             assertTrue(songs.isEmpty());
             assertTrue(notifications.isEmpty());

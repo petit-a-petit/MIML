@@ -8,6 +8,7 @@ import com.petitapetit.miml.domain.artist.dto.ArtistDto;
 import com.petitapetit.miml.domain.member.model.Member;
 import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,12 @@ public class ArtistService {
 
         userArtist.cancelLike();
         memberArtistRepository.delete(userArtist);
+    }
+
+    public Set<Member> findMembersByLikedArtistNames(List<Artist> artists) {
+        Set<Member> likedMembers = memberRepository.findByLikedArtistNames(artists.stream().map(Artist::getName).collect(
+                Collectors.toList()));
+        return likedMembers;
     }
 }
 
