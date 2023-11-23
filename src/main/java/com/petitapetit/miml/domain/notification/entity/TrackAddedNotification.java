@@ -2,7 +2,7 @@ package com.petitapetit.miml.domain.notification.entity;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.member.model.Member;
-import com.petitapetit.miml.domain.track.Track;
+import com.petitapetit.miml.domain.track.entity.Track;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;

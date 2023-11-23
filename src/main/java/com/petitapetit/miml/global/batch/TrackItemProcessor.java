@@ -2,11 +2,11 @@ package com.petitapetit.miml.global.batch;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.artist.domain.ArtistRepository;
-import com.petitapetit.miml.domain.track.ArtistTrack;
-import com.petitapetit.miml.domain.track.ArtistTrackRepository;
-import com.petitapetit.miml.domain.track.Track;
-import com.petitapetit.miml.domain.track.TrackDto;
-import com.petitapetit.miml.domain.track.TrackService;
+import com.petitapetit.miml.domain.track.entity.ArtistTrack;
+import com.petitapetit.miml.domain.track.repository.ArtistTrackRepository;
+import com.petitapetit.miml.domain.track.entity.Track;
+import com.petitapetit.miml.domain.track.dto.TrackDto;
+import com.petitapetit.miml.domain.track.service.TrackService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

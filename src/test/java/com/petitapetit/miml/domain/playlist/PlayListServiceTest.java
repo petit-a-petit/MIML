@@ -47,9 +47,9 @@ public class PlayListServiceTest {
                         .playListId(1L).build();
 
 
-        doReturn(playList).when(playListMapper).SaveRequestToPlayList(saveRequest, 1L);
+        doReturn(playList).when(playListMapper).saveRequestToPlayList(saveRequest, 1L);
         doReturn(playList).when(playListRepository).save(playList);
-        doReturn(saveResponse).when(playListMapper).PlayListToSaveResponse(playList);
+        doReturn(saveResponse).when(playListMapper).playListToSaveResponse(playList);
 
 
         //when

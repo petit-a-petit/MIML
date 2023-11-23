@@ -1,6 +1,6 @@
 package com.petitapetit.miml.domain.artist.domain;
 
-import com.petitapetit.miml.domain.track.ArtistTrack;
+import com.petitapetit.miml.domain.track.entity.ArtistTrack;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

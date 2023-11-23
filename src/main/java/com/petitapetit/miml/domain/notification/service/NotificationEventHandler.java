@@ -9,7 +9,7 @@ import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNot
 import com.petitapetit.miml.domain.notification.entity.TrackAddedNotification;
 import com.petitapetit.miml.domain.notification.event.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
-import com.petitapetit.miml.domain.track.Track;
+import com.petitapetit.miml.domain.track.entity.Track;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

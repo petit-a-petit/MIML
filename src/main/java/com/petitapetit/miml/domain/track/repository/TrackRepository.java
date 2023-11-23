@@ -1,5 +1,6 @@
-package com.petitapetit.miml.domain.track;
+package com.petitapetit.miml.domain.track.repository;
 
+import com.petitapetit.miml.domain.track.entity.Track;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

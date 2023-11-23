@@ -1,6 +1,10 @@
-package com.petitapetit.miml.domain.track;
+package com.petitapetit.miml.domain.track.service;
 
 import com.petitapetit.miml.domain.notification.event.TrackAddedEvent;
+import com.petitapetit.miml.domain.track.repository.TrackRepository;
+import com.petitapetit.miml.domain.track.dto.TrackDto;
+import com.petitapetit.miml.domain.track.entity.ArtistTrack;
+import com.petitapetit.miml.domain.track.entity.Track;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

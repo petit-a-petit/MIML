@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.track;
+package com.petitapetit.miml.domain.track.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

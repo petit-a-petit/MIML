@@ -1,7 +1,7 @@
 package com.petitapetit.miml.global.batch;
 
-import com.petitapetit.miml.domain.track.Track;
-import com.petitapetit.miml.domain.track.TrackDto;
+import com.petitapetit.miml.domain.track.entity.Track;
+import com.petitapetit.miml.domain.track.dto.TrackDto;
 import javax.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;

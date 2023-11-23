@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.track;
+package com.petitapetit.miml.domain.track.entity;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import javax.persistence.Entity;
