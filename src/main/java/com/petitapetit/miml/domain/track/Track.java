@@ -1,16 +1,20 @@
 package com.petitapetit.miml.domain.track;
 
+import com.petitapetit.miml.domain.artist.domain.Artist;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Track {
@@ -35,5 +39,12 @@ public class Track {
 
     public void setArtistTracks(List<ArtistTrack> artistTracks) {
         this.artistTracks = artistTracks;
+    }
+
+    public List<Artist> getArtists() {
+        List<Artist> artists = this.artistTracks.stream()
+                .map(ArtistTrack::getArtist)
+                .collect(Collectors.toList());
+        return artists;
     }
 }

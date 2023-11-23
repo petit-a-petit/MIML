@@ -1,15 +1,17 @@
 package com.petitapetit.miml.domain.notification.service;
 
+import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
-import com.petitapetit.miml.domain.notification.TempSong;
-import com.petitapetit.miml.domain.notification.TempUser;
-import com.petitapetit.miml.domain.notification.TempUserRepository;
+import com.petitapetit.miml.domain.member.model.Member;
+import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
-import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
+import com.petitapetit.miml.domain.notification.entity.TrackAddedNotification;
 import com.petitapetit.miml.domain.notification.event.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
+import com.petitapetit.miml.domain.track.Track;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -26,25 +28,28 @@ import java.util.*;
 @Slf4j
 public class NotificationEventHandler {
 
-    private final TempUserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final NotificationRepository notificationRepository;
     private final MailService mailService;
 
     @Async
-    public CompletableFuture<Void> handleSongEvent(SongAddedEvent event) {
-        TempSong song = event.getSong();
+    public CompletableFuture<Void> handleSongEvent(TrackAddedEvent event) {
+        Track track = event.getTrack();
 
-        Set<TempUser> users = userRepository.findByLikeArtistsSetContaining(song.getArtist());
+        List<Artist> artists = track.getArtists();
+        Set<Member> users = memberRepository.findByLikedArtistNames(
+                artists.stream().map(artist -> artist.getName()).collect(
+                        Collectors.toList()));
 
-        for (TempUser user : users) {
-            sendToUserAboutNewSongNotification(song, user);
+        for (Member user : users) {
+            sendToUserAboutNewSongNotification(track, user);
         }
         return null;
     }
 
     @Transactional(propagation = Propagation.NESTED)
-    public void sendToUserAboutNewSongNotification(TempSong song, TempUser user) {
-        SongAddedNotification notification = SongAddedNotification.from(song, user);
+    public void sendToUserAboutNewSongNotification(Track song, Member user) {
+        TrackAddedNotification notification = TrackAddedNotification.from(song, user);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }

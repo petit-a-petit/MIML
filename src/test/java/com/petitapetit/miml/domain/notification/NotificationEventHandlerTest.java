@@ -1,16 +1,23 @@
 package com.petitapetit.miml.domain.notification;
 
+import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
+import com.petitapetit.miml.domain.member.model.Member;
+import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
-import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
+import com.petitapetit.miml.domain.notification.entity.TrackAddedNotification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import com.petitapetit.miml.domain.notification.event.FriendRequestedEvent;
 import com.petitapetit.miml.domain.notification.service.NotificationEventHandler;
 import com.petitapetit.miml.domain.notification.event.SharePlaylistRequestedEvent;
-import com.petitapetit.miml.domain.notification.event.SongAddedEvent;
+import com.petitapetit.miml.domain.notification.event.TrackAddedEvent;
+import com.petitapetit.miml.domain.track.Track;
+import com.petitapetit.miml.domain.track.TrackDto;
 import com.petitapetit.miml.test.ServiceTest;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,7 +36,7 @@ public class NotificationEventHandlerTest extends ServiceTest {
     @Mock
     private NotificationRepository notificationRepository;
     @Mock
-    private TempUserRepository userRepository;
+    private MemberRepository userRepository;
     @Mock
     private MailService mailService;
 
@@ -37,33 +44,34 @@ public class NotificationEventHandlerTest extends ServiceTest {
     @DisplayName("신곡이 추가되었을 때, 해당 노래의 아티스트를 좋아요 한 사용자에게 알림이 간다.")
     public void testHandleSongEvent() {
         // given
-        TempArtist artist = new TempArtist("artist");
-        TempSong song = new TempSong("newSong", artist);
-        SongAddedEvent event = new SongAddedEvent(song);
-        Set<TempUser> users = new HashSet<>();
-        users.add(new TempUser());
+        TrackDto dto = new TrackDto(1,"spotify:url","artist","trackName","JYP","2","1","1","100");
+        Track track = new Track(dto);
+        TrackAddedEvent event = new TrackAddedEvent(track);
+        Set<Member> users = new HashSet<>();
+        users.add(new Member());
 
-        when(userRepository.findByLikeArtistsSetContaining(any())).thenReturn(users);
+        when(userRepository.findByLikedArtistNames(any())).thenReturn(users);
 
         // when
         notificationEventHandler.handleSongEvent(event);
 
         // then
-        verify(mailService, times(users.size())).sendEmail(any(SongAddedNotification.class));
-        verify(notificationRepository, times(users.size())).save(any(SongAddedNotification.class));
+        verify(mailService, times(users.size())).sendEmail(any(TrackAddedNotification.class));
+        verify(notificationRepository, times(users.size())).save(any(TrackAddedNotification.class));
     }
 
     @Test
     @DisplayName("신곡 추가 시 좋아요 한 사용자가 없으면 메일과 알림은 발송/저장 되지 않는다.")
     public void testHandleSongEvent_NoLikedUsers() {
         // given
-        TempArtist artist = new TempArtist("artist");
-        Set<TempUser> noUsers = Collections.emptySet();
+        List<Artist> artist = new ArrayList<>(List.of(new Artist("artist")));
+        Set<Member> noUsers = Collections.emptySet();
 
-        TempSong songByNoLikedArtists = new TempSong("song", artist);
-        SongAddedEvent event = new SongAddedEvent(songByNoLikedArtists);
+        TrackDto dto = new TrackDto(1,"spotify:url","artist","trackName","JYP","2","1","1","100");
+        Track songByNoLikedArtists = new Track(dto);
+        TrackAddedEvent event = new TrackAddedEvent(songByNoLikedArtists);
 
-        when(userRepository.findByLikeArtistsSetContaining(artist)).thenReturn(noUsers);
+        when(userRepository.findByLikedArtistNames(any())).thenReturn(noUsers);
 
         // when
         notificationEventHandler.handleSongEvent(event);

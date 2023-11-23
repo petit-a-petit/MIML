@@ -1,7 +1,6 @@
 package com.petitapetit.miml.domain.track;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,9 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArtistTrack {
@@ -31,4 +32,7 @@ public class ArtistTrack {
         this.artist = artist;
     }
 
+    public void setTrack(Track track) {
+        this.track = track;
+    }
 }

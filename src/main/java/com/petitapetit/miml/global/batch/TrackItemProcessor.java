@@ -6,6 +6,7 @@ import com.petitapetit.miml.domain.track.ArtistTrack;
 import com.petitapetit.miml.domain.track.ArtistTrackRepository;
 import com.petitapetit.miml.domain.track.Track;
 import com.petitapetit.miml.domain.track.TrackDto;
+import com.petitapetit.miml.domain.track.TrackService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class TrackItemProcessor implements ItemProcessor<TrackDto, Track> {
     private final ArtistRepository artistRepository;
 
     private final ArtistTrackRepository artistTrackRepository;
-
+    private final TrackService trackService;
     @Override
     public Track process(final TrackDto trackDto) {
         List<ArtistTrack> artistTracks = Arrays.stream(trackDto.getArtistNames().split(","))
@@ -31,10 +32,8 @@ public class TrackItemProcessor implements ItemProcessor<TrackDto, Track> {
                 })
                 .collect(Collectors.toList());
 
-        Track track = new Track(trackDto);
-        track.setArtistTracks(artistTracks);
-
-        return track;
+        Track newTrack = trackService.addNewSong(trackDto, artistTracks);
+        return newTrack;
     }
 }
 

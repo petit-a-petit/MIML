@@ -39,10 +39,11 @@ public class Member {
 	private OAuth2Provider provider;
 	private String providerId;
 	@OneToMany(mappedBy = "member")
+	@Builder.Default
 	private Set<MemberArtist> likedArtists = new HashSet<>();
 
 	public void likeArtist(MemberArtist memberArtist) {
-		likedArtists.add(memberArtist);
+		this.likedArtists.add(memberArtist);
 		memberArtist.setMember(this);
 	}
 }
