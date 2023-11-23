@@ -2,13 +2,13 @@ package com.petitapetit.miml.domain.notification;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.artist.domain.ArtistRepository;
-import com.petitapetit.miml.domain.artist.domain.MemberArtist;
 import com.petitapetit.miml.domain.artist.domain.MemberArtistRepository;
 import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.member.model.Member;
 import com.petitapetit.miml.domain.member.model.RoleType;
 import com.petitapetit.miml.domain.member.repository.MemberRepository;
+import com.petitapetit.miml.domain.member.service.MemberService;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import com.petitapetit.miml.domain.track.entity.ArtistTrack;
@@ -48,7 +48,7 @@ public class NotificationTransactionIntegrationTest {
     @Autowired
     private ArtistTrackRepository artistTrackRepository;
     @Autowired
-    private MemberArtistRepository memberArtistRepository;
+    private MemberService memberService;
     @MockBean
     private MailService mailService;
     @Autowired
@@ -129,9 +129,7 @@ public class NotificationTransactionIntegrationTest {
                     .providerId("test")
                     .build();
             member = memberRepository.save(member);
-            MemberArtist memberArtist = new MemberArtist(member, artist);
-            member.likeArtist(memberArtist);
-            memberArtistRepository.save(memberArtist);
+            memberService.likeArtist(member,artist.getId());
 
             doThrow(new RuntimeException()).when(mailService).sendEmail(any(Notification.class));
 
@@ -161,7 +159,6 @@ public class NotificationTransactionIntegrationTest {
             artistTrack.setTrack(track);
             artistTrack = artistTrackRepository.save(artistTrack);
 
-
             Member member = Member.builder()
                     .name("Test User")
                     .email("test@example.com")
@@ -169,10 +166,8 @@ public class NotificationTransactionIntegrationTest {
                     .provider(OAuth2Provider.SPOTIFY)
                     .providerId("test")
                     .build();
-            MemberArtist memberArtist = new MemberArtist(member, artist);
-            member.likeArtist(memberArtist);
             member = memberRepository.save(member);
-            memberArtistRepository.save(memberArtist);
+            memberService.likeArtist(member,artist.getId());
 
             // when: addNewSong 메소드 호출
             trackService.addNewSong(dto, List.of(artistTrack));
