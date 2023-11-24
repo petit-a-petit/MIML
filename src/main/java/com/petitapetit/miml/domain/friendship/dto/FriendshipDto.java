@@ -13,6 +13,7 @@ public class FriendshipDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Getter
+	@Builder
 	public static class CreateRequest {
 		@NotNull
 		private Long toMemberId; // 내가 친구 요청을 보낼 회원의 아이디
