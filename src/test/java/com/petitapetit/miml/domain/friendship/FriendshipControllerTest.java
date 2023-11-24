@@ -3,6 +3,7 @@ package com.petitapetit.miml.domain.friendship;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petitapetit.miml.domain.friendship.api.FriendshipController;
@@ -20,10 +23,17 @@ import com.petitapetit.miml.global.WithMockCustomUser;
 
 @WebMvcTest(FriendshipController.class)
 public class FriendshipControllerTest {
+	@Autowired
+	protected WebApplicationContext context;
 	@MockBean
 	FriendshipService friendshipService;
 	@Autowired
 	private MockMvc mockMvc;
+
+	@BeforeEach
+	public void init() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+	}
 
 	@DisplayName("친구 신청 성공")
 	@Test
