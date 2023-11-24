@@ -27,7 +27,6 @@ public class FriendshipControllerTest {
 	protected WebApplicationContext context;
 	@MockBean
 	FriendshipService friendshipService;
-	@Autowired
 	private MockMvc mockMvc;
 
 	@BeforeEach
