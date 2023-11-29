@@ -43,10 +43,6 @@ public class MemberArtist {
         this.artist = artist;
     }
 
-    public Artist getArtist() {
-        return this.artist;
-    }
-
     public void cancelLike() {
         this.member.getLikedArtists().remove(this);
         this.artist.getLikedByUsers().remove(this);
