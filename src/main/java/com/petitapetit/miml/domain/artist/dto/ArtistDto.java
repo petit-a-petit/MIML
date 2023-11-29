@@ -19,7 +19,7 @@ public class ArtistDto {
 	@NoArgsConstructor
 	@Getter
 	@Builder
-	public static class Response {
+	public static class LikeResponse {
 		private Long artistId; // 좋아요한 아티스트의 아이디
 		private String artistName;
 	}

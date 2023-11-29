@@ -1,7 +1,6 @@
 package com.petitapetit.miml.domain.artist.api;
 
-import com.petitapetit.miml.domain.artist.dto.ArtistDto;
-import com.petitapetit.miml.domain.artist.dto.ArtistDto.Response;
+import com.petitapetit.miml.domain.artist.dto.ArtistDto.LikeResponse;
 import com.petitapetit.miml.domain.artist.service.ArtistService;
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
 import java.util.List;
@@ -35,10 +34,10 @@ public class ArtistController {
 
     // 사용자가 좋아요한 아티스트 목록 조회
     @GetMapping("/liked")
-    public ResponseEntity<List<Response>> getLikedArtistList(
+    public ResponseEntity<List<LikeResponse>> getLikedArtistList(
             @AuthenticationPrincipal CustomOAuth2User oAuth2User
     ) {
-        List<ArtistDto.Response> likedArtists = artistService.getLikedArtists(oAuth2User.getUser().getMemberId());
+        List<LikeResponse> likedArtists = artistService.getLikedArtists(oAuth2User.getUser().getMemberId());
         return ResponseEntity.status(HttpStatus.OK).body(likedArtists);
     }
 
