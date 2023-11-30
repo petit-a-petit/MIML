@@ -1,9 +1,11 @@
 package com.petitapetit.miml.domain.friendship.service;
 
+import com.petitapetit.miml.domain.notification.event.FriendRequestedEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class FriendshipService {
 	private final MemberRepository memberRepository;
 	private final FriendshipRepository friendshipRepository;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public void createFriendship(
 		FriendshipDto.CreateRequest createRequest,
@@ -46,6 +49,10 @@ public class FriendshipService {
 			.isFriend(Boolean.FALSE)
 			.build();
 		friendshipRepository.saveAll(Arrays.asList(friendship, reversedFriendship));
+
+		// 알림 전송
+		FriendRequestedEvent friendRequestedEvent = new FriendRequestedEvent(fromMember, toMember);
+		applicationEventPublisher.publishEvent(friendRequestedEvent);
 	}
 
 	// 친구 요청 수락
