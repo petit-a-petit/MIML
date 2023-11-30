@@ -58,9 +58,8 @@ public class ArtistService {
     }
 
     public Set<Member> findMembersByLikedArtistNames(List<Artist> artists) {
-        Set<Member> likedMembers = memberRepository.findByLikedArtistNames(artists.stream().map(Artist::getName).collect(
+        return memberRepository.findByLikedArtistNames(artists.stream().map(Artist::getName).collect(
                 Collectors.toList()));
-        return likedMembers;
     }
 }
 
