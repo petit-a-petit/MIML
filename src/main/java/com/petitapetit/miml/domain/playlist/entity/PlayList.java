@@ -1,5 +1,8 @@
 package com.petitapetit.miml.domain.playlist.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.OneToMany;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -20,6 +23,8 @@ public class PlayList {
     private String name;
 
     private Long memberId;
+    @OneToMany(mappedBy = "playList")
+    private Set<TrackPlayList> trackPlayLists = new HashSet<>();
 
     private Boolean isPublic;
 
