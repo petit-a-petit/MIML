@@ -5,7 +5,6 @@ import com.petitapetit.miml.domain.artist.domain.ArtistRepository;
 import com.petitapetit.miml.domain.artist.domain.MemberArtist;
 import com.petitapetit.miml.domain.artist.domain.MemberArtistRepository;
 import com.petitapetit.miml.domain.member.model.Member;
-import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,5 +21,16 @@ public class MemberService {
         MemberArtist memberArtist = new MemberArtist(member,artist);
         member.likeArtist(memberArtist);
         memberArtistRepository.save(memberArtist);
+    }
+
+    public void unlikeArtist(Member member, Long artistId) {
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new NoSuchElementException());
+
+        MemberArtist memberArtist = memberArtistRepository.findByMember_MemberIdAndArtist_Id(member.getMemberId(), artist.getId())
+                .orElseThrow(() -> new NoSuchElementException("The member did not like this artist"));
+
+        member.unlikeArtist(memberArtist);
+        memberArtistRepository.deleteById(memberArtist.getId());
     }
 }

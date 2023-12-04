@@ -117,4 +117,15 @@ public class PlayListService {
         trackPlayLists.add(trackPlayList);
         trackPlayListRepository.save(trackPlayList);
     }
+
+    @Transactional
+    public void removeTrackFromPlayList(Long playListId, Long trackId, Long memberId) {
+        PlayList playList = checkExistence(playListId);
+        checkAuthorization(memberId, playList);
+        TrackPlayList trackPlayListToRemove = trackPlayListRepository.findByTrackIdAndPlayListId(trackId, playListId)
+                .orElseThrow(()-> new EntityNotFoundException());
+
+        // 찾은 엔티티를 삭제합니다.
+        trackPlayListRepository.delete(trackPlayListToRemove);
+    }
 }
