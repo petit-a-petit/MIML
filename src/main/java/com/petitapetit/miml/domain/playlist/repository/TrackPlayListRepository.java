@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TrackPlayListRepository extends JpaRepository<TrackPlayList, Long> {
-    Optional<TrackPlayList> findByTrackIdAndPlayListId(Long trackId, Long playListId);
+    Optional<TrackPlayList> findByTrackIdAndPlayList_PlayListId(Long trackId, Long playListId);
 }

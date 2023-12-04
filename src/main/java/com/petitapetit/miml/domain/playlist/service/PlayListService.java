@@ -122,7 +122,7 @@ public class PlayListService {
     public void removeTrackFromPlayList(Long playListId, Long trackId, Long memberId) {
         PlayList playList = checkExistence(playListId);
         checkAuthorization(memberId, playList);
-        TrackPlayList trackPlayListToRemove = trackPlayListRepository.findByTrackIdAndPlayListId(trackId, playListId)
+        TrackPlayList trackPlayListToRemove = trackPlayListRepository.findByTrackIdAndPlayList_PlayListId(trackId, playListId)
                 .orElseThrow(()-> new EntityNotFoundException());
 
         // 찾은 엔티티를 삭제합니다.
