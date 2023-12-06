@@ -2,7 +2,6 @@ package com.petitapetit.miml.domain.notification;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.artist.domain.ArtistRepository;
-import com.petitapetit.miml.domain.artist.service.ArtistService;
 import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
 import com.petitapetit.miml.domain.member.model.Member;
@@ -11,8 +10,6 @@ import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import com.petitapetit.miml.domain.member.service.MemberService;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
-import com.petitapetit.miml.domain.track.entity.ArtistTrack;
-import com.petitapetit.miml.domain.track.repository.ArtistTrackRepository;
 import com.petitapetit.miml.domain.track.entity.Track;
 import com.petitapetit.miml.domain.track.dto.TrackDto;
 import com.petitapetit.miml.domain.track.repository.TrackRepository;
@@ -27,16 +24,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@SpringBootTest
-public class NotificationTransactionIntegrationTest {
+@SpringBootTest(properties = {"spring.batch.job.enabled=false"})
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+class NotificationTransactionIntegrationTest {
     @Autowired
     private TrackRepository trackRepository;
     @Autowired
@@ -46,17 +43,14 @@ public class NotificationTransactionIntegrationTest {
     @Autowired
     private ArtistRepository artistRepository;
     @Autowired
-    private ArtistTrackRepository artistTrackRepository;
-    @Autowired
     private MemberService memberService;
-    @Autowired
-    private ArtistService artistService;
     @MockBean
     private MailService mailService;
     @Autowired
     private NotificationRepository notificationRepository;
     @Test
-    public void testFindByLikedArtists() {
+    @DisplayName("아티스트로 좋아요한 사용자 찾기")
+    void testFindMembersByLikedArtists() {
         // 멤버 생성
         Member member = Member.builder()
                 .name("Test User")
@@ -75,15 +69,10 @@ public class NotificationTransactionIntegrationTest {
         Track track = new Track(dto);
         track = trackRepository.save(track);
 
-        ArtistTrack artistTrack = new ArtistTrack(artist);
-        artistTrack.setTrack(track);
-        artistTrackRepository.save(artistTrack);
-
         memberService.likeArtist(member,artist.getId());
 
         // 트랙의 아티스트를 좋아하는 멤버 찾기
-        List<Artist> trackArtists = trackService.getArtistsByTrack(track);
-        Set<Member> likedMembers = artistService.findMembersByLikedArtistNames(trackArtists);
+        Set<Member> likedMembers = memberRepository.findByLikedArtistNames(List.of(artistName));
 
         // 검증
         boolean containsMember = likedMembers.stream()
@@ -118,12 +107,6 @@ public class NotificationTransactionIntegrationTest {
             artist = artistRepository.save(artist);
 
             TrackDto dto = new TrackDto(1,"spotify:url",artistName,"song","JYP","2","1","1","100");
-            Track track = new Track(dto);
-            track = trackRepository.save(track);
-
-            ArtistTrack artistTrack = new ArtistTrack(artist);
-            artistTrack.setTrack(track);
-            artistTrack = artistTrackRepository.save(artistTrack);
 
             Member member = Member.builder()
                     .name("Test User")
@@ -138,7 +121,7 @@ public class NotificationTransactionIntegrationTest {
             doThrow(new RuntimeException()).when(mailService).sendEmail(any(Notification.class));
 
             // when: 신곡 추가 이벤트가 발생하고 음악이 저장되었음을 확인
-            trackService.addNewSong(dto, List.of(artistTrack));
+            trackService.addNewSong(dto, List.of(artist));
 
             // then : 음악은 저장되고 알림은 저장
             List<Track> songs = trackRepository.findByName("song");
@@ -156,12 +139,6 @@ public class NotificationTransactionIntegrationTest {
             artist = artistRepository.save(artist);
 
             TrackDto dto = new TrackDto(1,"spotify:url",artistName,"song","JYP","2","1","1","100");
-            Track track = new Track(dto);
-            track = trackRepository.save(track);
-
-            ArtistTrack artistTrack = new ArtistTrack(artist);
-            artistTrack.setTrack(track);
-            artistTrack = artistTrackRepository.save(artistTrack);
 
             Member member = Member.builder()
                     .name("Test User")
@@ -174,7 +151,7 @@ public class NotificationTransactionIntegrationTest {
             memberService.likeArtist(member,artist.getId());
 
             // when: addNewSong 메소드 호출
-            trackService.addNewSong(dto, List.of(artistTrack));
+            trackService.addNewSong(dto, List.of(artist));
 
             // then: 신곡 추가 이벤트가 발생했음을 확인
             List<Track> songs = trackRepository.findAll();

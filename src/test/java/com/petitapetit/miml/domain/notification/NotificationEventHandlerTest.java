@@ -48,7 +48,7 @@ class NotificationEventHandlerTest extends ServiceTest {
         // given
         TrackDto dto = new TrackDto(1,"spotify:url","artist","trackName","JYP","2","1","1","100");
         Track track = new Track(dto);
-        TrackAddedEvent event = new TrackAddedEvent(track);
+        TrackAddedEvent event = new TrackAddedEvent(track,List.of());
         Set<Member> users = new HashSet<>();
         users.add(new Member());
 
@@ -71,7 +71,7 @@ class NotificationEventHandlerTest extends ServiceTest {
 
         TrackDto dto = new TrackDto(1,"spotify:url","artist","trackName","JYP","2","1","1","100");
         Track songByNoLikedArtists = new Track(dto);
-        TrackAddedEvent event = new TrackAddedEvent(songByNoLikedArtists);
+        TrackAddedEvent event = new TrackAddedEvent(songByNoLikedArtists,List.of());
 
         when(userRepository.findByLikedArtistNames(any())).thenReturn(noUsers);
 

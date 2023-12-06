@@ -25,17 +25,20 @@ public class TrackService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Track addNewSong(TrackDto trackDto, List<ArtistTrack> artistTracks) {
+    public Track addNewSong(TrackDto trackDto, List<Artist> artists) {
         log.info("음악 생성 : {}", trackDto.getTrackName());
         log.info("현재 스레드 정보 : {}", Thread.currentThread());
         checkInputValue(trackDto);
 
         Track track = new Track(trackDto);
-        track.setArtistTracks(artistTracks);
         Track savedTrack = trackRepository.save(track);
+        for(Artist artist : artists) {
+            ArtistTrack artistTrack = new ArtistTrack(artist, savedTrack);
+            artistTrackRepository.save(artistTrack);
+        }
 
         // song 추가 이벤트 생성 및 발행
-        TrackAddedEvent trackAddedEvent = new TrackAddedEvent(track);
+        TrackAddedEvent trackAddedEvent = new TrackAddedEvent(savedTrack, artists);
         try {
             applicationEventPublisher.publishEvent(trackAddedEvent);
         } catch (Exception e) {
@@ -54,7 +57,6 @@ public class TrackService {
     @Transactional(readOnly = true)
     public List<Artist> getArtistsByTrack(Track track) {
         List<ArtistTrack> artistTrack = artistTrackRepository.findAllByTrack(track);
-        List<Artist> artists = artistTrack.stream().map(ArtistTrack::getArtist).collect(Collectors.toList());
-        return artists;
+        return artistTrack.stream().map(ArtistTrack::getArtist).collect(Collectors.toList());
     }
 }

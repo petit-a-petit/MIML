@@ -24,6 +24,7 @@ public class PlayList {
 
     private Long memberId;
     @OneToMany(mappedBy = "playList")
+    @Builder.Default
     private Set<TrackPlayList> trackPlayLists = new HashSet<>();
 
     private Boolean isPublic;

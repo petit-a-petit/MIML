@@ -29,8 +29,9 @@ public class ArtistTrack {
     @JoinColumn(name = "track_id")
     private Track track;
 
-    public ArtistTrack(Artist artist) {
+    public ArtistTrack(Artist artist, Track track) {
         this.artist = artist;
+        this.track = track;
     }
 
     public void setTrack(Track track) {
