@@ -10,6 +10,7 @@ import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +26,8 @@ public class ArtistService {
 
     @Transactional
     public void likeArtist(Long userId, Long artistId) {
-        Member user = memberRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userId));
-        Artist artist = artistRepository.findById(artistId)
-                .orElseThrow(() -> new IllegalArgumentException("아티스트를 찾을 수 없습니다: " + artistId));
+        Member user = getMember(userId);
+        Artist artist = getArtist(artistId);
 
         MemberArtist userArtist = new MemberArtist(user, artist);
         user.likeArtist(userArtist);
@@ -36,10 +35,19 @@ public class ArtistService {
         memberArtistRepository.save(userArtist);
     }
 
+    private Artist getArtist(Long artistId) {
+        return artistRepository.findById(artistId)
+                .orElseThrow(() -> new EntityNotFoundException("아티스트를 찾을 수 없습니다: " + artistId));
+    }
+
+    private Member getMember(Long userId) {
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + userId));
+    }
+
     @Transactional(readOnly = true)
     public List<LikeResponse> getLikedArtists(Long userId) {
-        Member user = memberRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userId));
+        Member user = getMember(userId);
 
         return user.getLikedArtists().stream()
                 .map(userArtist -> new LikeResponse(
@@ -50,11 +58,15 @@ public class ArtistService {
 
     @Transactional
     public void cancelLikeArtist(Long userId, Long artistId) {
-        MemberArtist userArtist = memberArtistRepository.findByMember_MemberIdAndArtist_Id(userId, artistId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 또는 아티스트를 찾을 수 없습니다."));
+        MemberArtist userArtist = getMemberArtist(userId, artistId);
 
         userArtist.cancelLike();
         memberArtistRepository.delete(userArtist);
+    }
+
+    private MemberArtist getMemberArtist(Long userId, Long artistId) {
+        return memberArtistRepository.findByMember_MemberIdAndArtist_Id(userId, artistId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자 또는 아티스트를 찾을 수 없습니다."));
     }
 
     public Set<Member> findMembersByLikedArtistNames(List<Artist> artists) {
