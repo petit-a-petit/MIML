@@ -43,7 +43,7 @@ public class ArtistServiceIntegrationTest {
         artistService.likeArtist(member.getMemberId(), artist.getId());
 
         // Then
-        Optional<MemberArtist> optionalMemberArtist = memberArtistRepository.findByMember_MemberIdAndArtist_Id(member.getMemberId(), artist.getId());
+        Optional<MemberArtist> optionalMemberArtist = memberArtistRepository.findByMemberMemberIdAndArtistId(member.getMemberId(), artist.getId());
         assertTrue(optionalMemberArtist.isPresent());
     }
 
@@ -62,7 +62,7 @@ public class ArtistServiceIntegrationTest {
         artistService.cancelLikeArtist(member.getMemberId(), artist.getId());
 
         // Then
-        Optional<MemberArtist> optionalMemberArtist = memberArtistRepository.findByMember_MemberIdAndArtist_Id(member.getMemberId(), artist.getId());
+        Optional<MemberArtist> optionalMemberArtist = memberArtistRepository.findByMemberMemberIdAndArtistId(member.getMemberId(), artist.getId());
         assertFalse(optionalMemberArtist.isPresent());
     }
 }

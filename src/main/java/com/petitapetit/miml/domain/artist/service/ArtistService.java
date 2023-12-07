@@ -65,7 +65,7 @@ public class ArtistService {
     }
 
     private MemberArtist getMemberArtist(Long userId, Long artistId) {
-        return memberArtistRepository.findByMember_MemberIdAndArtist_Id(userId, artistId)
+        return memberArtistRepository.findByMemberMemberIdAndArtistId(userId, artistId)
                 .orElseThrow(() -> new EntityNotFoundException("사용자 또는 아티스트를 찾을 수 없습니다."));
     }
 

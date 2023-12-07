@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberArtistRepository extends JpaRepository<MemberArtist, Long> {
     @EntityGraph(attributePaths = {"member", "artist"})
-    Optional<MemberArtist> findByMember_MemberIdAndArtist_Id(Long memberId, Long artistId);
+    Optional<MemberArtist> findByMemberMemberIdAndArtistId(Long memberId, Long artistId);
 }

@@ -1,6 +1,5 @@
 package com.petitapetit.miml.domain.artist.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -67,7 +66,7 @@ public class ArtistServiceTest extends ServiceTest{
     void testCancelLikeArtist() {
         // Given
         MemberArtist memberArtist = new MemberArtist(new Member(), new Artist());
-        when(memberArtistRepository.findByMember_MemberIdAndArtist_Id(anyLong(), anyLong())).thenReturn(Optional.of(memberArtist));
+        when(memberArtistRepository.findByMemberMemberIdAndArtistId(anyLong(), anyLong())).thenReturn(Optional.of(memberArtist));
 
         // When
         artistService.cancelLikeArtist(1L, 1L);
