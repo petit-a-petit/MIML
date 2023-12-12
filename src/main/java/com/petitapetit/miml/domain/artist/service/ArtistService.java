@@ -29,9 +29,7 @@ public class ArtistService {
         Member user = getMember(userId);
         Artist artist = getArtist(artistId);
 
-        MemberArtist userArtist = new MemberArtist(user, artist);
-        user.likeArtist(userArtist);
-        artist.likedByUser(userArtist);
+        MemberArtist userArtist = MemberArtist.likeArtist(user, artist);
         memberArtistRepository.save(userArtist);
     }
 

@@ -18,8 +18,7 @@ public class MemberService {
     public void likeArtist(Member member, Long artistId) {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(()->new EntityNotFoundException());
-        MemberArtist memberArtist = new MemberArtist(member,artist);
-        member.likeArtist(memberArtist);
+        MemberArtist memberArtist = MemberArtist.likeArtist(member,artist);
         memberArtistRepository.save(memberArtist);
     }
 }

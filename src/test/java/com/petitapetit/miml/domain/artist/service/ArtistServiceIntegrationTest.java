@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class ArtistServiceIntegrationTest {
+class ArtistServiceIntegrationTest {
 
     @Autowired
     private ArtistService artistService;
@@ -32,7 +32,7 @@ public class ArtistServiceIntegrationTest {
 
     @Test
     @DisplayName("유저 아티스트 좋아요 기능 저장 확인 테스트")
-    public void testLikeArtist() {
+    void testLikeArtist() {
         // Given
         Member member = new Member();
         Artist artist = new Artist();
@@ -49,13 +49,13 @@ public class ArtistServiceIntegrationTest {
 
     @Test
     @DisplayName("유저 아티스트 좋아요 삭제 기능 저장 확인 테스트")
-    public void testCancelLikeArtist() {
+    void testCancelLikeArtist() {
         // Given
         Member member = new Member();
         Artist artist = new Artist();
         member = memberRepository.save(member);
         artist = artistRepository.save(artist);
-        MemberArtist memberArtist = new MemberArtist(member, artist);
+        MemberArtist memberArtist = MemberArtist.likeArtist(member, artist);
         memberArtistRepository.save(memberArtist);
 
         // When

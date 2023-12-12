@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-public class ArtistServiceTest extends ServiceTest{
+class ArtistServiceTest extends ServiceTest{
 
     @Mock
     private MemberRepository memberRepository;
@@ -65,7 +65,7 @@ public class ArtistServiceTest extends ServiceTest{
     @DisplayName("사용자는 좋아요한 아티스트를 취소할 수 있다.")
     void testCancelLikeArtist() {
         // Given
-        MemberArtist memberArtist = new MemberArtist(new Member(), new Artist());
+        MemberArtist memberArtist = MemberArtist.likeArtist(new Member(), new Artist());
         when(memberArtistRepository.findByMemberMemberIdAndArtistId(anyLong(), anyLong())).thenReturn(Optional.of(memberArtist));
 
         // When

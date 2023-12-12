@@ -36,9 +36,4 @@ public class Artist {
     public Artist(String name) {
         this.name = name;
     }
-
-    public void likedByUser(MemberArtist memberArtist) {
-        likedByUsers.add(memberArtist);
-        memberArtist.setArtist(this);
-    }
 }

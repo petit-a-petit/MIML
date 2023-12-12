@@ -29,20 +29,19 @@ public class MemberArtist {
     @JoinColumn(name = "artist_id")
     private Artist artist;
 
-    public MemberArtist(Member member, Artist artist) {
+    private MemberArtist(Member member, Artist artist) {
         this.member = member;
         this.artist = artist;
     }
 
-    // 연관 관계 편의 메서드
-    public void setMember(Member member) {
-        this.member = member;
-    }
+    public static MemberArtist likeArtist(Member member, Artist artist) {
+        MemberArtist memberArtist = new MemberArtist(member, artist);
 
-    public void setArtist(Artist artist) {
-        this.artist = artist;
-    }
+        member.getLikedArtists().add(memberArtist);
+        artist.getLikedByUsers().add(memberArtist);
 
+        return memberArtist;
+    }
     public void cancelLike() {
         this.member.getLikedArtists().remove(this);
         this.artist.getLikedByUsers().remove(this);

@@ -41,9 +41,4 @@ public class Member {
 	@OneToMany(mappedBy = "member")
 	@Builder.Default
 	private Set<MemberArtist> likedArtists = new HashSet<>();
-
-	public void likeArtist(MemberArtist memberArtist) {
-		this.likedArtists.add(memberArtist);
-		memberArtist.setMember(this);
-	}
 }
