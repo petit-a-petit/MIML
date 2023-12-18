@@ -42,10 +42,12 @@ public class MemberArtist {
 
         return memberArtist;
     }
-    public void cancelLike() {
+
+    public MemberArtist cancelLike(Member member, Artist artist) {
         this.member.getLikedArtists().remove(this);
         this.artist.getLikedByUsers().remove(this);
         this.member = null;
         this.artist = null;
+        return this;
     }
 }

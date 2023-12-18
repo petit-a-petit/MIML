@@ -56,10 +56,12 @@ public class ArtistService {
 
     @Transactional
     public void cancelLikeArtist(Long userId, Long artistId) {
-        MemberArtist userArtist = getMemberArtist(userId, artistId);
+        Member user = getMember(userId);
+        Artist artist = getArtist(artistId);
+        MemberArtist memberArtist = getMemberArtist(userId,artistId);
 
-        userArtist.cancelLike();
-        memberArtistRepository.delete(userArtist);
+        memberArtist.cancelLike(user,artist);
+        memberArtistRepository.delete(memberArtist);
     }
 
     private MemberArtist getMemberArtist(Long userId, Long artistId) {

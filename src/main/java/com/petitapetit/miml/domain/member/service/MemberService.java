@@ -8,6 +8,7 @@ import com.petitapetit.miml.domain.member.model.Member;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class MemberService {
     private final ArtistRepository artistRepository;
     private final MemberArtistRepository memberArtistRepository;
 
+    @Transactional
     public void likeArtist(Member member, Long artistId) {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(()->new EntityNotFoundException());
