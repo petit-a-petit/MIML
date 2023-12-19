@@ -2,6 +2,7 @@ package com.petitapetit.miml.domain.track.service;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.notification.event.TrackAddedEvent;
+import com.petitapetit.miml.domain.track.dto.TrackInfo;
 import com.petitapetit.miml.domain.track.repository.ArtistTrackRepository;
 import com.petitapetit.miml.domain.track.repository.TrackRepository;
 import com.petitapetit.miml.domain.track.dto.TrackDto;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,5 +61,11 @@ public class TrackService {
     public List<Artist> getArtistsByTrack(Track track) {
         List<ArtistTrack> artistTrack = artistTrackRepository.findAllByTrack(track);
         return artistTrack.stream().map(ArtistTrack::getArtist).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TrackInfo> getTrackPage(Pageable pageable) {
+        Page<Track> tracks = trackRepository.findAll(pageable);
+        return tracks.getContent().stream().map(TrackInfo::new).collect(Collectors.toList());
     }
 }
