@@ -51,7 +51,7 @@ public class FriendshipService {
 		friendshipRepository.saveAll(Arrays.asList(friendship, reversedFriendship));
 
 		// 알림 전송
-		FriendRequestedEvent friendRequestedEvent = new FriendRequestedEvent(fromMember, toMember);
+		FriendRequestedEvent friendRequestedEvent = new FriendRequestedEvent(fromMember.getName(), toMember.getEmail());
 		applicationEventPublisher.publishEvent(friendRequestedEvent);
 	}
 

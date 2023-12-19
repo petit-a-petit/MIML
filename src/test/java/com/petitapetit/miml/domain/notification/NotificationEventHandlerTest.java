@@ -55,7 +55,7 @@ class NotificationEventHandlerTest extends ServiceTest {
         when(userRepository.findByLikedArtistNames(any())).thenReturn(users);
 
         // when
-        notificationEventHandler.handleSongEvent(event);
+        notificationEventHandler.notifyUsersWhenTrackAdded(event);
 
         // then
         verify(mailService, times(users.size())).sendEmail(any(TrackAddedNotification.class));
@@ -76,7 +76,7 @@ class NotificationEventHandlerTest extends ServiceTest {
         when(userRepository.findByLikedArtistNames(any())).thenReturn(noUsers);
 
         // when
-        notificationEventHandler.handleSongEvent(event);
+        notificationEventHandler.notifyUsersWhenTrackAdded(event);
 
         // then
         verify(mailService, never()).sendEmail(any());
@@ -101,7 +101,7 @@ class NotificationEventHandlerTest extends ServiceTest {
                 .provider(OAuth2Provider.SPOTIFY)
                 .providerId("test")
                 .build();
-        FriendRequestedEvent event = new FriendRequestedEvent(user1, user2);
+        FriendRequestedEvent event = new FriendRequestedEvent(user1.getEmail(), user2.getEmail());
 
         // when
         notificationEventHandler.handleFriendRequestEvent(event);

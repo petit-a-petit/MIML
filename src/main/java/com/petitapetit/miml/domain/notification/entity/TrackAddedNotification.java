@@ -14,18 +14,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class TrackAddedNotification extends Notification {
-    private String songName;
+    private String trackName;  // 추가된 음악 이름
     @ElementCollection
-    private List<String> songArtist;
+    private List<String> trackArtist; // 추가된 음악의 아티스트들 이름
 
-    public static TrackAddedNotification of(Track song, Member user){
-        return new TrackAddedNotification(user, song);
+    public static TrackAddedNotification of(Track track, Member user){
+        List<String> songArtist = track.getArtists().stream().map(Artist::getName).collect(Collectors.toList());
+        return new TrackAddedNotification(user.getEmail(), track.getName(), songArtist);
     }
 
-    private TrackAddedNotification(Member user, Track track){
-        super(user.getEmail());
-        this.songArtist = track.getArtists().stream().map(Artist::getName).collect(Collectors.toList());
-        this.songName = track.getName();
+    private TrackAddedNotification(String userEmail, String trackName, List<String> trackArtist){
+        super(userEmail);
+        this.trackName = trackName;
+        this.trackArtist = trackArtist;
     }
 
     @Override
@@ -36,8 +37,8 @@ public class TrackAddedNotification extends Notification {
     @Override
     public String makeText() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getSongArtist());
-        sb.append(getSongName());
+        sb.append(getTrackArtist());
+        sb.append(getTrackName());
         return sb.toString();
     }
 }

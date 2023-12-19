@@ -7,9 +7,8 @@ import java.util.stream.Collectors;
 
 // 신곡이 추가될 때 발행(publish) 될 event
 public class TrackAddedEvent {
-    // 임시 곡
-    private final Track track;
-    private List<String> artistsNames;
+    private final Track track;  // 생성된 노래 제목
+    private List<String> artistsNames;  // 좋아요한 사용자들을 찾기 위한 아티스트 이름들
 
     public TrackAddedEvent(Track track,List<Artist> artists) {
         this.track = track;

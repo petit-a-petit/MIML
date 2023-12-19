@@ -31,19 +31,19 @@ public class NotificationEventHandler {
     private final MailService mailService;
 
     @Async
-    public CompletableFuture<Void> handleSongEvent(TrackAddedEvent event) {
+    public CompletableFuture<Void> notifyUsersWhenTrackAdded(TrackAddedEvent event) {
         Track track = event.getTrack();
         List<String> artistsNames = event.getArtistsNames();
         Set<Member> users = memberRepository.findByLikedArtistNames(artistsNames);
         for (Member user : users) {
-            sendToUserAboutNewSongNotification(track, user);
+            sendToUserAboutNewTrackNotification(track, user);
         }
         return null;
     }
 
     @Transactional(propagation = Propagation.NESTED)
-    public void sendToUserAboutNewSongNotification(Track song, Member user) {
-        TrackAddedNotification notification = TrackAddedNotification.from(song, user);
+    public void sendToUserAboutNewTrackNotification(Track track, Member user) {
+        TrackAddedNotification notification = TrackAddedNotification.of(track, user);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
@@ -52,7 +52,7 @@ public class NotificationEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Async
     public void handleFriendRequestEvent(FriendRequestedEvent event) {
-        FriendRequestedNotification notification = FriendRequestedNotification.of(event);
+        FriendRequestedNotification notification = FriendRequestedNotification.from(event);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
