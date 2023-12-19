@@ -2,7 +2,6 @@ package com.petitapetit.miml.global.batch;
 
 import com.petitapetit.miml.domain.artist.domain.Artist;
 import com.petitapetit.miml.domain.artist.domain.ArtistRepository;
-import com.petitapetit.miml.domain.track.repository.ArtistTrackRepository;
 import com.petitapetit.miml.domain.track.entity.Track;
 import com.petitapetit.miml.domain.track.dto.TrackDto;
 import com.petitapetit.miml.domain.track.service.TrackService;
@@ -18,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 public class TrackItemProcessor implements ItemProcessor<TrackDto, Track> {
     private final ArtistRepository artistRepository;
 
-    private final ArtistTrackRepository artistTrackRepository;
     private final TrackService trackService;
     @Override
     public Track process(final TrackDto trackDto) {
@@ -27,7 +25,7 @@ public class TrackItemProcessor implements ItemProcessor<TrackDto, Track> {
                 .map(name -> artistRepository.findByName(name).orElseGet(() -> artistRepository.save(new Artist(name))))
                 .collect(Collectors.toList());
 
-        return trackService.addNewSong(trackDto, artists);
+        return trackService.addNewTrack(trackDto, artists);
     }
 }
 

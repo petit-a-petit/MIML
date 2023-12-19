@@ -28,7 +28,7 @@ public class TrackService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Track addNewSong(TrackDto trackDto, List<Artist> artists) {
+    public Track addNewTrack(TrackDto trackDto, List<Artist> artists) {
         log.info("음악 생성 : {}", trackDto.getTrackName());
         log.info("현재 스레드 정보 : {}", Thread.currentThread());
         checkInputValue(trackDto);
@@ -40,7 +40,7 @@ public class TrackService {
             artistTrackRepository.save(artistTrack);
         }
 
-        // song 추가 이벤트 생성 및 발행
+        // track 추가 이벤트 생성 및 발행
         TrackAddedEvent trackAddedEvent = new TrackAddedEvent(savedTrack, artists);
         try {
             applicationEventPublisher.publishEvent(trackAddedEvent);

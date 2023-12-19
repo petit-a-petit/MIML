@@ -129,7 +129,7 @@ class NotificationTransactionIntegrationTest {
 
             // when: addNewSong 메소드 호출하지만 내부 예외 발생
             assertThrows(NullPointerException.class,
-                    () -> trackService.addNewSong(dto,null));
+                    () -> trackService.addNewTrack(dto,null));
 
             // then: 저장된 곡과 알림이 없음을 확인
             List<Track> songs = trackRepository.findByName("trackName");
@@ -161,7 +161,7 @@ class NotificationTransactionIntegrationTest {
             doThrow(new RuntimeException()).when(mailService).sendEmail(any(Notification.class));
 
             // when: 신곡 추가 이벤트가 발생하고 음악이 저장되었음을 확인
-            track = trackService.addNewSong(dto, List.of(artist));
+            track = trackService.addNewTrack(dto, List.of(artist));
 
             // then : 음악은 저장되고 알림은 저장
             List<Track> songs = trackRepository.findByName("song");
@@ -191,7 +191,7 @@ class NotificationTransactionIntegrationTest {
             memberService.likeArtist(member,artist.getId());
 
             // when: addNewSong 메소드 호출
-            track = trackService.addNewSong(dto, List.of(artist));
+            track = trackService.addNewTrack(dto, List.of(artist));
 
             // then: 신곡 추가 이벤트가 발생했음을 확인
             List<Track> songs = trackRepository.findAll();

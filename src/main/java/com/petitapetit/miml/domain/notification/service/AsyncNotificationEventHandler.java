@@ -19,8 +19,8 @@ public class AsyncNotificationEventHandler {
 
     @TransactionalEventListener(classes = TrackAddedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handleSongEvent(TrackAddedEvent event) {
-        CompletableFuture<Void> result = notificationEventHandler.handleSongEvent(event);
+    public void handleTrackAddedEvent(TrackAddedEvent event) {
+        CompletableFuture<Void> result = notificationEventHandler.notifyUsersWhenTrackAdded(event);
         try {
             result.get();
         } catch (InterruptedException | ExecutionException e) {
