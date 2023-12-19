@@ -18,7 +18,7 @@ public class TrackAddedNotification extends Notification {
     @ElementCollection
     private List<String> songArtist;
 
-    public static TrackAddedNotification from(Track song, Member user){
+    public static TrackAddedNotification of(Track song, Member user){
         return new TrackAddedNotification(user, song);
     }
 
