@@ -1,14 +1,15 @@
 package com.petitapetit.miml.domain.notification.service;
 
 import com.petitapetit.miml.domain.mail.serivce.MailService;
-import com.petitapetit.miml.domain.notification.TempSong;
-import com.petitapetit.miml.domain.notification.TempUser;
-import com.petitapetit.miml.domain.notification.TempUserRepository;
+import com.petitapetit.miml.domain.member.model.Member;
+import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
-import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
+import com.petitapetit.miml.domain.notification.entity.TrackAddedNotification;
 import com.petitapetit.miml.domain.notification.event.*;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
+import com.petitapetit.miml.domain.track.entity.Track;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -25,26 +26,24 @@ import java.util.*;
 @Slf4j
 public class NotificationEventHandler {
 
-    private final TempUserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final NotificationRepository notificationRepository;
     private final MailService mailService;
 
-    @TransactionalEventListener(classes = SongAddedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Async
-    public void handleSongEvent(SongAddedEvent event) {
-        TempSong song = event.getSong();
-
-        Set<TempUser> users = userRepository.findByLikeArtistsSetContaining(song.getArtist());
-
-        for (TempUser user : users) {
-            sendToUserAboutNewSongNotification(song, user);
+    public CompletableFuture<Void> notifyUsersWhenTrackAdded(TrackAddedEvent event) {
+        Track track = event.getTrack();
+        List<String> artistsNames = event.getArtistsNames();
+        Set<Member> users = memberRepository.findByLikedArtistNames(artistsNames);
+        for (Member user : users) {
+            sendToUserAboutNewTrackNotification(track, user);
         }
+        return null;
     }
 
     @Transactional(propagation = Propagation.NESTED)
-    public void sendToUserAboutNewSongNotification(TempSong song, TempUser user) {
-        SongAddedNotification notification = SongAddedNotification.from(song, user);
+    public void sendToUserAboutNewTrackNotification(Track track, Member user) {
+        TrackAddedNotification notification = TrackAddedNotification.of(track, user);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }
@@ -53,7 +52,7 @@ public class NotificationEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Async
     public void handleFriendRequestEvent(FriendRequestedEvent event) {
-        FriendRequestedNotification notification = FriendRequestedNotification.of(event);
+        FriendRequestedNotification notification = FriendRequestedNotification.from(event);
         mailService.sendEmail(notification);
         notificationRepository.save(notification);
     }

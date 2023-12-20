@@ -1,6 +1,5 @@
 package com.petitapetit.miml.domain.notification.entity;
 
-import com.petitapetit.miml.domain.notification.TempUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;

@@ -10,15 +10,15 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Entity
 public class SharePlaylistRequestedNotification extends Notification {
-    private String requestedUserEmail;  // 친구 요청 받은 유저 이름
+    private String currentUserName;  // 친구 요청한 유저명
 
     public static SharePlaylistRequestedNotification from(SharePlaylistRequestedEvent event) {
-        return new SharePlaylistRequestedNotification(event.getCurrentUserEmail(), event.getRequestedUserEmail());
+        return new SharePlaylistRequestedNotification(event.getCurrentUserName(), event.getRequestedUserEmail());
     }
 
-    private SharePlaylistRequestedNotification(String currentUserEmail, String requestedUserEmail){
-        super(currentUserEmail);
-        this.requestedUserEmail = requestedUserEmail;
+    private SharePlaylistRequestedNotification(String currentUserName, String requestedUserEmail){
+        super(requestedUserEmail);
+        this.currentUserName = currentUserName;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SharePlaylistRequestedNotification extends Notification {
     @Override
     public String makeText() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getRequestedUserEmail());
+        sb.append(getCurrentUserName());
         return sb.toString();
     }
 }

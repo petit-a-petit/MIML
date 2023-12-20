@@ -1,16 +1,25 @@
 package com.petitapetit.miml.domain.notification;
 
+import com.petitapetit.miml.domain.artist.domain.Artist;
+import com.petitapetit.miml.domain.auth.oauth.OAuth2Provider;
 import com.petitapetit.miml.domain.mail.serivce.MailService;
+import com.petitapetit.miml.domain.member.model.Member;
+import com.petitapetit.miml.domain.member.model.RoleType;
+import com.petitapetit.miml.domain.member.repository.MemberRepository;
 import com.petitapetit.miml.domain.notification.entity.FriendRequestedNotification;
 import com.petitapetit.miml.domain.notification.entity.Notification;
 import com.petitapetit.miml.domain.notification.entity.SharePlaylistRequestedNotification;
-import com.petitapetit.miml.domain.notification.entity.SongAddedNotification;
+import com.petitapetit.miml.domain.notification.entity.TrackAddedNotification;
 import com.petitapetit.miml.domain.notification.repository.NotificationRepository;
 import com.petitapetit.miml.domain.notification.event.FriendRequestedEvent;
 import com.petitapetit.miml.domain.notification.service.NotificationEventHandler;
 import com.petitapetit.miml.domain.notification.event.SharePlaylistRequestedEvent;
-import com.petitapetit.miml.domain.notification.event.SongAddedEvent;
+import com.petitapetit.miml.domain.notification.event.TrackAddedEvent;
+import com.petitapetit.miml.domain.track.entity.Track;
+import com.petitapetit.miml.domain.track.dto.TrackDto;
 import com.petitapetit.miml.test.ServiceTest;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,51 +31,52 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
-public class NotificationEventHandlerTest extends ServiceTest {
+class NotificationEventHandlerTest extends ServiceTest {
 
     @InjectMocks
     private NotificationEventHandler notificationEventHandler;
     @Mock
     private NotificationRepository notificationRepository;
     @Mock
-    private TempUserRepository userRepository;
+    private MemberRepository userRepository;
     @Mock
     private MailService mailService;
 
     @Test
     @DisplayName("신곡이 추가되었을 때, 해당 노래의 아티스트를 좋아요 한 사용자에게 알림이 간다.")
-    public void testHandleSongEvent() {
+    void testHandleSongEvent() {
         // given
-        TempArtist artist = new TempArtist("artist");
-        TempSong song = new TempSong("newSong", artist);
-        SongAddedEvent event = new SongAddedEvent(song);
-        Set<TempUser> users = new HashSet<>();
-        users.add(new TempUser());
+        TrackDto dto = new TrackDto(1,"spotify:url","artist","trackName","JYP","2","1","1","100");
+        Track track = new Track(dto);
+        TrackAddedEvent event = new TrackAddedEvent(track,List.of());
+        Set<Member> users = new HashSet<>();
+        users.add(new Member());
 
-        when(userRepository.findByLikeArtistsSetContaining(any())).thenReturn(users);
+        when(userRepository.findByLikedArtistNames(any())).thenReturn(users);
 
         // when
-        notificationEventHandler.handleSongEvent(event);
+        notificationEventHandler.notifyUsersWhenTrackAdded(event);
 
         // then
-        verify(mailService, times(users.size())).sendEmail(any(SongAddedNotification.class));
-        verify(notificationRepository, times(users.size())).save(any(SongAddedNotification.class));
+        verify(mailService, times(users.size())).sendEmail(any(TrackAddedNotification.class));
+        verify(notificationRepository, times(users.size())).save(any(TrackAddedNotification.class));
     }
 
     @Test
     @DisplayName("신곡 추가 시 좋아요 한 사용자가 없으면 메일과 알림은 발송/저장 되지 않는다.")
-    public void testHandleSongEvent_NoLikedUsers() {
+    void testHandleSongEvent_NoLikedUsers() {
         // given
-        TempArtist artist = new TempArtist("artist");
-        Set<TempUser> noUsers = Collections.emptySet();
+        List<Artist> artist = new ArrayList<>(List.of(new Artist("artist")));
+        Set<Member> noUsers = Collections.emptySet();
 
-        TempSong songByNoLikedArtists = new TempSong("song", artist);
-        SongAddedEvent event = new SongAddedEvent(songByNoLikedArtists);
+        TrackDto dto = new TrackDto(1,"spotify:url","artist","trackName","JYP","2","1","1","100");
+        Track songByNoLikedArtists = new Track(dto);
+        TrackAddedEvent event = new TrackAddedEvent(songByNoLikedArtists,List.of());
 
-        when(userRepository.findByLikeArtistsSetContaining(artist)).thenReturn(noUsers);
+        when(userRepository.findByLikedArtistNames(any())).thenReturn(noUsers);
 
         // when
-        notificationEventHandler.handleSongEvent(event);
+        notificationEventHandler.notifyUsersWhenTrackAdded(event);
 
         // then
         verify(mailService, never()).sendEmail(any());
@@ -77,9 +87,21 @@ public class NotificationEventHandlerTest extends ServiceTest {
     @DisplayName("친구 추가 이벤트 발생 시 mail이 보내지고 알림 내용이 저장된다.")
     void testHandleFriendRequestEvent() {
         // given
-        TempUser user1 = new TempUser();
-        TempUser user2 = new TempUser();
-        FriendRequestedEvent event = new FriendRequestedEvent(user1, user2);
+        Member user1 = Member.builder()
+                .name("Test User")
+                .email("test@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test")
+                .build();
+        Member user2 = Member.builder()
+                .name("Test User")
+                .email("test@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test")
+                .build();
+        FriendRequestedEvent event = new FriendRequestedEvent(user1.getEmail(), user2.getEmail());
 
         // when
         notificationEventHandler.handleFriendRequestEvent(event);
@@ -93,8 +115,20 @@ public class NotificationEventHandlerTest extends ServiceTest {
     @DisplayName("플레이리스트 공유 이벤트 발생 시 mail이 보내지고 알림 내용이 저장된다.")
     void testHandleSharePlaylistRequestEvent() {
         // given
-        TempUser user1 = new TempUser();
-        TempUser user2 = new TempUser();
+        Member user1 = Member.builder()
+                .name("Test User1")
+                .email("test1@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test1")
+                .build();
+        Member user2 = Member.builder()
+                .name("Test User2")
+                .email("test1@example.com")
+                .role(RoleType.ROLE_USER)
+                .provider(OAuth2Provider.SPOTIFY)
+                .providerId("test2")
+                .build();
         SharePlaylistRequestedEvent event = new SharePlaylistRequestedEvent(user1, user2);
 
         // when

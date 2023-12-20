@@ -1,4 +1,4 @@
-package com.petitapetit.miml.domain.artist;
+package com.petitapetit.miml.domain.artist.domain;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
