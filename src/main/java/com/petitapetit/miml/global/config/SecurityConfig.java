@@ -13,8 +13,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2UserService;
 import com.petitapetit.miml.domain.auth.oauth.filter.OriginalUriFilter;
 import com.petitapetit.miml.domain.auth.oauth.filter.SimpleAuthFilter;
-import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationFailureHandler;
+import com.petitapetit.miml.domain.auth.oauth.handler.OAuth2AuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 

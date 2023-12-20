@@ -25,4 +25,5 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 	)
 	List<Member> findFriends(Member loginMember);
 	Optional<Friendship> findByFromMemberAndToMemberAndIsFriend(Member fromMember, Member toMember, Boolean isFriend);
+	Boolean existsByFromMemberAndToMember(Member fromMember, Member toMember);
 }

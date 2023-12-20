@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.petitapetit.miml.domain.auth.oauth.CustomOAuth2User;
 import com.petitapetit.miml.domain.friendship.dto.FriendshipDto;
+import com.petitapetit.miml.domain.friendship.exception.FriendshipConflictException;
 import com.petitapetit.miml.domain.friendship.exception.FriendshipNotFoundException;
 import com.petitapetit.miml.domain.friendship.model.Friendship;
 import com.petitapetit.miml.domain.friendship.repository.FriendshipRepository;
@@ -33,6 +34,12 @@ public class FriendshipService {
 		// 친구 요청을 받은 Member
 		Member toMember = memberRepository.findById(createRequest.getToMemberId())
 			.orElseThrow(() -> new MemberNotFoundException());
+
+		// 친구 신청 내역이 존재하거나 이미 친구라면 예외 처리
+		if (friendshipRepository.existsByFromMemberAndToMember(fromMember, toMember)) {
+			throw new FriendshipConflictException();
+		}
+
 		// 정방향 레코드
 		Friendship friendship = Friendship.builder()
 			.toMember(toMember)
